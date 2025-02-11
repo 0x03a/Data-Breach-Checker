@@ -1,0 +1,664 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Space+Grotesk:wght@300..700&display=swap');
+:root{
+    --nav-color:#0F1729;
+    --p-color: #f6f6f6; 
+    --inter: "Inter", sans-serif;
+
+}
+
+
+/* html, body {
+    overflow:scroll; /* Allow scrolling 
+   
+} 
+*/
+
+
+body {
+    background: linear-gradient(to bottom, #1B1464, #C62828, #F57C00);
+    background-attachment: fixed;
+    overflow: hidden;
+    position: relative;
+}
+
+
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.3);
+    animation: moveRandom 8s infinite alternate ease-in-out, float 6s infinite alternate ease-in-out;
+}
+
+/* Random sizes */
+.circle:nth-child(3n) { width: 10px; height: 10px; }
+.circle:nth-child(3n+1) { width: 15px; height: 15px; }
+.circle:nth-child(3n+2) { width: 20px; height: 20px; }
+
+/* Spider Web */
+.spider-web {
+    position: absolute;
+    font-size: 30px;
+    color: white;
+    opacity: 0.7;
+    animation: webFloat 5s infinite alternate ease-in-out, webMove 4s infinite alternate ease-in-out;
+}
+
+
+
+
+*{
+    margin:0;
+    padding:0 ;
+    box-sizing: border-box; /*Ensures padding & border stay inside the defined width/height. */
+    list-style: none;  /*Removes default bullets or numbers from lists*/
+    text-decoration:none;
+  
+    scroll-behavior: smooth;
+   
+
+}
+
+
+nav{
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3% 10%;
+    background-color:var(--nav-color);
+    color:white;
+    z-index: 999 !important;
+  
+  }
+  
+
+
+/* Logo section  */
+.logo {
+    background-color: #0e1222;
+    height: 50%; /* Adjusted for better visibility */
+    width: 100%; /* Slightly increased width */
+    margin-top: 3px;
+    margin-left: -100px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 10px;
+}
+
+
+
+.logo_part_1, .logo_part_2, .logo_part_3 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    font-family: var(--inter);
+  
+}
+
+.logo_part_1,
+.logo_part_3{
+    color:#ff4d4d ;
+    
+}
+
+.logo h4 {
+    margin-bottom: 5px;
+    font-size: 15px;
+    font-family: var(--inter);
+    color: #fff;
+    white-space: nowrap; /* Prevents "Secure Net" from wrapping */
+
+}
+
+/* Equals Sign */
+#eq {
+    font-family: var(--poppins);
+    font-weight: bold;
+}
+
+/* Tilde (~) Styling */
+.logo .tilde {
+    font-size: 22px;
+    margin-top: -2px;
+    font-weight: bold;
+}
+
+
+
+
+ul {
+   
+    display: flex;
+    align-items: center;
+    padding-right: 200px;
+   
+}
+
+ul li {
+    list-style: none;
+    margin-left: 10px; /* Remove spacing that pushes tabs */
+    margin-right: 0px; /* Optional: Add right spacing instead */
+}
+
+ul li a {
+    cursor: pointer;
+ 
+    transition: .3s;
+    font-size: 12px;
+    font-weight: 400;
+    font-family: var(--inter);
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+
+
+ul li a i {
+    margin-right: 8px; /* Adds space between the icon and text */
+ 
+
+}
+
+ul li a:hover{
+    color:#ff4d4d;
+
+}
+
+
+
+
+
+
+
+
+.btn1,
+.btn2{
+   
+    cursor:pointer;
+    background-color:var(--body-color);
+    color:#fff;
+    border: none;
+    outline: none;
+    font-size:10px;
+    font-weight: 600;
+    transition: .3s; /* like in power point */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--poppins);
+    
+    gap:10px;
+
+}
+
+
+
+.btn2{
+    margin-left: 20px;
+    background-color:#ff4d4d;
+    width: 90px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--inter);
+    font-weight: 500;
+    margin-top: 5px;
+    
+}
+
+
+
+.btn1{
+    background-color:var(--nav-color);
+    width: 90px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--inter);
+    font-weight: 500;
+    margin-left: 600px;
+   
+    
+}
+
+
+
+  
+.btn2 i{
+   
+    font-size: 10px; 
+}  
+
+.btn1 i{
+   
+    font-size: 10px; 
+}
+
+
+.btn2:hover {
+    background-color:#d32f2f;  /* Deep Red  */
+    color: #ffffff;             /* White */
+   
+}
+
+.btn1:hover {
+    color:#ff4d4d;  /* Dark Navy */
+    background-color:#545455;/*Dark Gray */
+}
+
+/* searchbar  */
+
+
+
+
+.background-elements {
+    pointer-events: none; /* Prevents background elements from blocking interaction */
+}
+
+
+
+/* Background Styling */
+.searchBar {
+ margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh; /* Adjust for proper centering */
+    width: 100%;
+    text-align: center;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+   
+}
+
+/* Heading Styling */
+.headings h1 {
+    font-size: 3rem; /* Large font */
+    font-weight: bold;
+    color: white;
+}
+
+.headings h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+   
+
+
+}
+
+.headings p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--inter);
+}
+
+/* Search Container */
+
+.headings h1 {
+    display: inline-block;
+    font-size: 50px;
+    font-weight: bold;
+    margin-right: 8px; /* Space between symbols */
+    font-family: 'Poppins', sans-serif;
+
+  }
+
+.headings #part_1,
+.headings #part_3{
+    color: #ff4d4d;
+}
+
+/* Centered Search Bar Section */
+.searchBar {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh; /* Adjust for proper centering */
+    width: 100%;
+    text-align: center;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Headings Styling */
+.headings h1 {
+    display: inline-block;
+    font-size: 50px;
+    font-weight: bold;
+    margin-right: 8px; /* Space between symbols */
+    font-family: 'Poppins', sans-serif;
+}
+
+.headings h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.headings p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--inter);
+}
+
+.headings #part_1,
+.headings #part_3 {
+    color: #ff4d4d;
+}
+
+/* Search Input & Button */
+/* Centered Search Bar Section */
+.searchBar {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh; /* Adjust for proper centering */
+    width: 100%;
+    text-align: center;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden; /* Prevents floating elements from causing scrollbars */
+}
+
+/* Headings Styling */
+.headings h1 {
+    display: inline-block;
+    font-size: 50px;
+    font-weight: bold;
+    margin-right: 8px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.headings h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.headings p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--inter);
+}
+
+.headings #part_1,
+.headings #part_3 {
+    color: #ff4d4d;
+}
+
+/* Centered Search Bar Section */
+.searchBar {
+    margin-top: 120px; /* Increased margin to prevent overlap */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh; /* Adjust for proper centering */
+    width: 100%;
+    text-align: center;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    overflow: visible; /* Prevents content from getting hidden */
+    z-index: 10; /* Ensures it stays above navbar */
+}
+
+/* Ensure the body allows scrolling */
+body {
+    overflow-y: auto;
+}
+
+/* Headings Styling */
+.headings h1 {
+    display: inline-block;
+    font-size: 50px;
+    font-weight: bold;
+    margin-right: 8px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 20; /* Prevents overlapping with navbar */
+}
+
+.headings h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.headings p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--inter);
+}
+
+.headings #part_1,
+.headings #part_3 {
+    color: #ff4d4d;
+}
+
+/* Search Input & Button */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 48rem;
+    margin-top: 20px;
+    flex-wrap: wrap; /* Allows input and button to stack on smaller screens */
+}
+
+.search-input {
+    flex: 1;
+    height: 20px; /* Reduced input height */
+    padding: 5px;
+    font-size: 14px;
+    height: 30px;
+    border: 1px solid rgba(39, 36, 36, 0.7);
+    outline: none;
+    background:  #c54c4c; /* for grid like color */
+    color: white;
+    border-radius: 2px;
+    width: 100%;
+}
+
+.search-input::placeholder {
+    color: rgba(211, 211, 211, 0.8);
+}
+
+.search-btn {
+    margin-bottom: 2px;
+    height: 30px; /* Reduced button height */
+    background-color: #a58888;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Focus Outline */
+.search-input:focus {
+    outline: 2px solid rgba(0, 0, 0, 0.5);
+    border: 2px solid black;
+    background: transparent; /* Removes the background color */
+}
+
+
+
+/* Statistics Grid */
+.stats-grid {
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 40px; /* Increased gap for better spacing */
+    margin-top: 2rem;
+    margin-left: 140px;
+    width: 100%;
+    max-width: 48rem;
+    min-height: auto; /* Ensures the grid does not collapse */
+}
+
+/* Stat Box Styling */
+.stat-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: white;
+    transition: transform 0.3s ease; /* Adds hover effect */
+}
+
+.stat-box:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.stat-box h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.stat-box p {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+
+/* footer section  */
+/* Footer Styles */
+/* Footer Styles */
+/* Footer Styles */
+footer {
+    position: fixed;
+    bottom: -60px; /* Initially hidden */
+    left: 0;
+    width: 100%;
+    background-color: rgba(15, 23, 41, 0.8); /* Adjust color */
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 999;
+    transition: bottom 0.4s ease-in-out;
+}
+
+/* Footer Content */
+.footer-content {
+    margin-bottom: 10px;
+}
+
+.footer-content a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    margin: 0 10px;
+    transition: 0.3s;
+}
+
+.footer-content a:hover {
+    color: #fff;
+}
+
+/* Social Icons */
+.footer-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-icons a {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 22px;
+    transition: 0.3s;
+}
+
+.footer-icons a:hover {
+    color: white;
+    transform: scale(1.1);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+    }
+    .search-input {
+        width: 100%;
+    }
+    .search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .headings h1 {
+        font-size: 40px;
+    }
+    .headings h2 {
+        font-size: 2rem;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
+}
+
+
+
+/* ANIMATION  */
+
+
+@keyframes moveRandom {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(30px, -40px); }
+    50% { transform: translate(-30px, 40px); }
+    75% { transform: translate(40px, 30px); }
+    100% { transform: translate(-40px, -30px); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+    100% { transform: translateY(0px) rotate(360deg); }
+}
+
+
+
+@keyframes webFloat {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.1); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes webMove {
+    0% { transform: rotate(0deg) translate(0px, 0px); }
+    50% { transform: rotate(15deg) translate(5px, -10px); }
+    100% { transform: rotate(-15deg) translate(-5px, 10px); }
+}
