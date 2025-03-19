@@ -72,7 +72,7 @@ nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 3% 10%;
+    padding: 2.5% 10%;
     background-color:var(--nav-color);
     color:white;
     z-index: 999 !important;
@@ -141,11 +141,14 @@ ul {
    
     display: flex;
     align-items: center;
-    padding-right: 200px;
+    
+    
+    
    
 }
 
 ul li {
+    
     list-style: none;
     margin-left: 10px; /* Remove spacing that pushes tabs */
     margin-right: 0px; /* Optional: Add right spacing instead */
@@ -153,10 +156,10 @@ ul li {
 
 ul li a {
     cursor: pointer;
- 
+     margin-right: 40px;
     transition: .3s;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 600;
     font-family: var(--inter);
     color: #fff;
     display: flex;
@@ -197,38 +200,50 @@ ul li a:hover{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: medium;
     font-family: var(--poppins);
-    
-    gap:10px;
+       
 
 }
 
 
 
-.btn2{
-    margin-left: 20px;
-    background-color:#ff4d4d;
+.btn2 {
+    background-color:#da1919;/*Dark Gray */
+    margin-left: 0px; /* Reduce margin to bring it closer */
     width: 90px;
     height: 30px;
     border: none;
     border-radius: 8px;
     font-family: var(--inter);
-    font-weight: 500;
+    font-weight: 600;
     margin-top: 5px;
-    
+    margin-right: 100px; /* Reduce margin-right for fine-tuning */
+    font-weight: 600;
 }
 
-
+.divider {
+    font-size: 30px; /* Adjust size */
+    font-weight: bold;
+   margin-left: 20px;
+    color: white; /* Adjust color */
+    display: flex;
+    align-items: center; /* Align with buttons */
+}
 
 .btn1{
+    
     background-color:var(--nav-color);
-    width: 90px;
+    width: 60px;
     height: 30px;
     border: none;
     border-radius: 8px;
     font-family: var(--inter);
-    font-weight: 500;
-    margin-left: 600px;
+    font-weight: 600;
+    margin-left: 300px;
+    margin-top: 4px;
+    
+
    
     
 }
@@ -238,24 +253,26 @@ ul li a:hover{
   
 .btn2 i{
    
-    font-size: 10px; 
+    font-size: 15px; 
+  
 }  
 
 .btn1 i{
    
-    font-size: 10px; 
+    font-size: 15px; 
 }
 
 
 .btn2:hover {
-    background-color:#d32f2f;  /* Deep Red  */
-    color: #ffffff;             /* White */
-   
+  
+    color:#ffffff;
+    background-color:#ff4d4d;/*Dark Gray */
 }
 
 .btn1:hover {
-    color:#ff4d4d;  /* Dark Navy */
-    background-color:#545455;/*Dark Gray */
+   
+    color:#ffffff;
+    background-color:#ff4d4d;/*Dark Gray */
 }
 
 /* searchbar  */
