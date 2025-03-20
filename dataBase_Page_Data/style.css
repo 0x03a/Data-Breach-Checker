@@ -146,13 +146,13 @@ ul {
 ul li {
     
     list-style: none;
-    margin-left: 10px; /* Remove spacing that pushes tabs */
+    margin-left: 50px; /* Remove spacing that pushes tabs */
     margin-right: 0px; /* Optional: Add right spacing instead */
 }
 
 ul li a {
     cursor: pointer;
-     margin-right: 40px;
+     margin-right: 30px;
     transition: .3s;
     font-size: 15px;
     font-weight: 600;
@@ -206,7 +206,7 @@ ul li a:hover{
 
 .btn2 {
     background-color:#da1919;/*Dark Gray */
-    margin-left: 0px; /* Reduce margin to bring it closer */
+ 
     width: 90px;
     height: 30px;
     border: none;
@@ -214,10 +214,12 @@ ul li a:hover{
     font-family: var(--inter);
     font-weight: 600;
     margin-top: 5px;
-    margin-right: 100px; /* Reduce margin-right for fine-tuning */
     font-weight: 600;
 }
-
+.Btn-Nav2 {
+    margin-left: 9px; /* Move button left */
+  
+}
 .nav_divider {
     font-size: 40px; /* Adjust size */
     font-weight: bold;
