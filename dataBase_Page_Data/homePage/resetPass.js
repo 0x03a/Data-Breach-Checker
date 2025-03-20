@@ -114,3 +114,22 @@ document.addEventListener("DOMContentLoaded", function () {
         floatWeb();
     }
 });
+
+// reset form validation
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("form[action='send-reset-link.php']").addEventListener("submit", function (event) {
+        const email = document.getElementById("email").value.trim();
+
+        // Regex for email validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Email validation
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address (e.g., user@example.com).");
+            event.preventDefault();
+            return false;
+        }
+
+        return true; // If validation passes
+    });
+});

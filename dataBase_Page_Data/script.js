@@ -267,6 +267,74 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+
+// sign up validations
+
+/*
+ Prevents form submission if any field fails validation
+ Displays alert messages for incorrect input
+ Uses regex for secure validation
+ Enhances user experience by guiding them on proper input format
+
+This ensures only valid data is submitted!
+
+*/
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector(".signup-form").addEventListener("submit", function (event) {
+        const fullname = document.getElementById("fullname").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const confirmPassword = document.getElementById("confirm-password").value.trim();
+        const terms = document.getElementById("terms").checked;
+
+        // Regex for full name validation (Only letters & spaces)
+        const namePattern = /^[A-Za-z\s]+$/;
+
+        // Regex for email validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Regex for strong password validation (Exactly 8 characters with at least 1 special character)
+        const passwordPattern = /^(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/;
+
+        // Full Name validation
+        if (!namePattern.test(fullname)) {
+            alert("Full Name should contain only letters and spaces.");
+            event.preventDefault();
+            return false;
+        }
+
+        // Email validation
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address (e.g., user@example.com).");
+            event.preventDefault();
+            return false;
+        }
+
+        // Password validation
+        if (!passwordPattern.test(password)) {
+            alert("Password must be exactly 8 characters long and contain at least one special character (@, $, !, %, *, ?, &).");
+            event.preventDefault();
+            return false;
+        }
+
+        // Confirm password validation
+        if (password !== confirmPassword) {
+            alert("Passwords do not match. Please try again.");
+            event.preventDefault();
+            return false;
+        }
+
+        // Terms & Conditions checkbox validation
+        if (!terms) {
+            alert("You must agree to the Terms and Privacy Policy.");
+            event.preventDefault();
+            return false;
+        }
+
+        return true; // If all validations pass
+    });
+});
+
        
       
 // Hide login modal
@@ -301,24 +369,35 @@ document.addEventListener("DOMContentLoaded", function () {
         eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
     });
 });
+
 function validateFields(event) {
-    // Select email and password fields using full path
+    // Select email and password fields
     const email = document.querySelector(".login-form .form-group #email").value.trim();
     const password = document.querySelector(".password-containerr #password").value.trim();
 
-    // Regular expression for validating an email address
+    // Regular expression for a valid email address
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Regular expression for a strong password (Min: 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character)
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     // Check if fields are empty
     if (email === "" || password === "") {
-        alert("Please enter both email and password before resetting the password.");
-        event.preventDefault(); // Prevents navigation
+        alert("Please enter both email and password before proceeding.");
+        event.preventDefault();
         return false;
     }
 
-    // Check if email is valid
+    // Validate email format
     if (!emailPattern.test(email)) {
-        alert("Please enter a valid email address.");
+        alert("Please enter a valid email address (e.g., example@domain.com).");
+        event.preventDefault();
+        return false;
+    }
+
+    // Validate password format
+    if (!passwordPattern.test(password)) {
+        alert("Password must be at least 8 characters long, including an uppercase letter, a lowercase letter, a number, and a special character.");
         event.preventDefault();
         return false;
     }
@@ -327,3 +406,35 @@ function validateFields(event) {
 }
 
 
+// Login Validaion
+/*
+ Prevents form submission if email/password are invalid
+ Uses regex to check valid email format
+ Ensures password is at least 8 characters
+ Shows alert messages if validation fails
+*/
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector(".login-form").addEventListener("submit", function (event) {
+        const email = document.querySelector(".login-form .form-group #email").value.trim();
+        const password = document.querySelector(".password-containerr #password").value.trim();
+
+        // Regex for email validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Email validation
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address (e.g., userexample@.com).");
+            event.preventDefault();
+            return false;
+        }
+
+        // Password validation (Minimum 8 characters)
+        if (password.length < 8) {
+            alert("Password must be at least 8 characters long.");
+            event.preventDefault();
+            return false;
+        }
+
+        return true; // If all validations pass
+    });
+});
