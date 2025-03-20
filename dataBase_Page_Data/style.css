@@ -29,10 +29,6 @@ body {
     animation: moveRandom 8s infinite alternate ease-in-out, float 6s infinite alternate ease-in-out;
 }
 
-/* Random sizes */
-.circle:nth-child(3n) { width: 10px; height: 10px; }
-.circle:nth-child(3n+1) { width: 15px; height: 15px; }
-.circle:nth-child(3n+2) { width: 20px; height: 20px; }
 
 /* Spider Web */
 .spider-web {
@@ -811,13 +807,35 @@ bottom: 40px;
     justify-content: space-between;
 }
 
-.google, .github {
+.google{
     width: 48%;
     background: #222;
     color: #fff;
     font-size: 13px;
     padding: 8px;
     border: 1px solid #555;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.github {
+    width: 48%;
+    background: #222;
+    color: #fff;
+    font-size: 13px;
+    padding: 8px;
+    border: 1px solid #555;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.google img{
+    margin-right: 6px;
+    margin-top: 0px;
+    width: 12px;
+    height: 12px;
 }
 
 .google:hover, .github:hover {
@@ -892,6 +910,7 @@ bottom: 40px;
 .close-btn:hover {
     background: rgba(255, 255, 255, 0.2); /* Light hover effect */
 }
+
 
 
 
@@ -1100,6 +1119,85 @@ text-decoration: underline;
 
 
 
+/* MEDIA QUERIES */
+@media (max-width: 1024px) {
+    nav {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    ul li {
+        margin: 5px 0;
+    }
+
+    .btn1,
+    .btn2 {
+        width: 80px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    ul li {
+        margin-left: 0;
+    }
+
+    .searchBar {
+        height: auto;
+        padding: 20px;
+    }
+
+    .headings h1 {
+        font-size: 2rem;
+    }
+
+    .headings h2 {
+        font-size: 1.5rem;
+    }
+
+    .headings p {
+        font-size: 0.9rem;
+    }
+
+    .btn1,
+    .btn2 {
+        width: 70px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1rem;
+    }
+
+    .btn1,
+    .btn2 {
+        width: 60px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+}
 /* Responsive adjustments for sign up form */
 @media (max-width: 400px) {
     .container {
@@ -1175,3 +1273,4 @@ text-decoration: underline;
     50% { transform: rotate(15deg) translate(5px, -10px); }
     100% { transform: rotate(-15deg) translate(-5px, 10px); }
 }
+

@@ -245,20 +245,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Show login modal
-function showLogin() {
-    const loginForm = document.getElementById("loginModal");
-    const overlay = document.getElementById("overlay");
+// Show login modal  // Function to show the login modal
+        function showLogin() {
+            const loginForm = document.getElementById("loginModal");
+            const overlay = document.getElementById("overlay");
 
-    if (loginForm) {
-        // Reset input fields
-        loginForm.querySelectorAll("input").forEach(input => input.value = "");
+            if (loginForm) {
+                // Reset input fields including password fields
+                loginForm.querySelectorAll("input[type='text'], input[type='email'], input[type='password']").forEach(input => {
+                    input.value = "";
+                });
 
-        loginForm.style.display = "block";
-        overlay.style.display = "block";
-    }
-}
+                // Ensure checkboxes and radio buttons are unchecked
+                loginForm.querySelectorAll("input[type='checkbox'], input[type='radio']").forEach(input => {
+                    input.checked = false;
+                });
 
+                // Show the login form and overlay
+                loginForm.style.display = "block";
+                overlay.style.display = "block";
+            }
+        }
+
+       
+      
 // Hide login modal
 function hideLogin() {
     document.getElementById("loginModal").style.display = "none";
@@ -291,3 +301,29 @@ document.addEventListener("DOMContentLoaded", function () {
         eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
     });
 });
+function validateFields(event) {
+    // Select email and password fields using full path
+    const email = document.querySelector(".login-form .form-group #email").value.trim();
+    const password = document.querySelector(".password-containerr #password").value.trim();
+
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Check if fields are empty
+    if (email === "" || password === "") {
+        alert("Please enter both email and password before resetting the password.");
+        event.preventDefault(); // Prevents navigation
+        return false;
+    }
+
+    // Check if email is valid
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        event.preventDefault();
+        return false;
+    }
+
+    return true; // Allow navigation if all conditions are met
+}
+
+

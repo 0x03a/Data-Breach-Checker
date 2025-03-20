@@ -158,11 +158,11 @@
         <div class="or-divider">Or continue with</div>
 
         <div class="social-buttons">
-            <button class="btn google"><i class="ri-google-fill"></i> Google</button>
+            <button class="btn google">  <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google"> Google</button>
             <button class="btn github"><i class="ri-github-fill"></i> GitHub</button>
         </div>
 
-        <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+        <p class="login-link">Already have an account? <a href="#" onclick="hideSignup(); showLogin();">Log in</a></p>
 <!-- Close Button -->
 <button class="close-btn" onclick="hideSignup()">
     <i class="fa-solid fa-xmark"></i> <!-- Cross icon -->
@@ -231,9 +231,8 @@
             </div>
             
             
-            
             <div class="forgot-password">
-                <a href="#">Forgot Password?</a>
+                <a href="resetPassword.html" onclick="return validateFields(event)">Forgot Password?</a>
             </div>
             
             <button type="submit" class="login-btn">Login</button>
@@ -254,10 +253,14 @@
             </div>
             
             <p class="signup-link">
-                Don't have an account? <a href="#">Sign up</a>
+                Don't have an account? <a href="#" onclick="hideLogin(); showSignup();"  >Sign up</a>
             </p>
         </form>
     </div>
+
+   
+
+
     <script src="../script.js"></script>
 </body>
 </html>
