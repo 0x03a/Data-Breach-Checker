@@ -225,59 +225,69 @@ function hideSignup() {
     document.getElementById("overlay").style.display = "none";
 }
 
-// show login
-  // Functions to show/hide login and signup modals
-  function showLogin() {
-    document.getElementById('loginModal').style.display = 'block';
-    document.getElementById('loginContainer').style.display = 'block';
-}
 
-function hideLogin() {
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('loginContainer').style.display = 'none';
-}
+// in login form toggle eye
+document.addEventListener("DOMContentLoaded", function () {
+    const pwdField = document.getElementById("password");
+    const toggleBtn = document.querySelector(".toggle-password");
+    const icon = toggleBtn.querySelector("i");
 
-
-// login show password
-const form1 = document.querySelector("form"); // Assuming these are within a form element
-const togglePasswordButtons1 = form1.querySelectorAll(".toggle-password");
-
-togglePasswordButtons1.forEach(button => {
-    // Show password on mouse hover
-    button.addEventListener("mouseenter", function() {
-        const passwordContainer = this.closest(".password-container");
-        const passwordField = passwordContainer.querySelector("input[type='password'], input[type='text']");
-        
-        passwordField.type = "text";
-        const eyeIcon = this.querySelector("i");
-        eyeIcon.classList.remove("fa-eye");
-        eyeIcon.classList.add("fa-eye-slash");
+    toggleBtn.addEventListener("mouseenter", function () {
+        pwdField.type = "text"; // Show password when hovering
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
     });
-    
-    // Hide password when mouse leaves
-    button.addEventListener("mouseleave", function() {
-        const passwordContainer = this.closest(".password-container");
-        const passwordField = passwordContainer.querySelector("input[type='password'], input[type='text']");
-        
-        passwordField.type = "password";
-        const eyeIcon = this.querySelector("i");
-        eyeIcon.classList.remove("fa-eye-slash");
-        eyeIcon.classList.add("fa-eye");
+
+    toggleBtn.addEventListener("mouseleave", function () {
+        pwdField.type = "password"; // Hide password when not hovering
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
     });
 });
 
-// login show up
+// Show login modal
 function showLogin() {
     const loginForm = document.getElementById("loginModal");
+    const overlay = document.getElementById("overlay");
 
     if (loginForm) {
-        // Reset fields when opening the form
-        const inputs = loginForm.querySelectorAll("input");
-        inputs.forEach(input => {
-            input.value = "";
-        });
+        // Reset input fields
+        loginForm.querySelectorAll("input").forEach(input => input.value = "");
 
         loginForm.style.display = "block";
-        document.getElementById("overlay").style.display = "block"; // Show background overlay if applicable
+        overlay.style.display = "block";
     }
 }
+
+// Hide login modal
+function hideLogin() {
+    document.getElementById("loginModal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Select the elements using their full path
+    const passwordField = document.querySelector(".password-containerr input[type='password']"); // i have to put containerr bcz when i write .password-container it mixes it with sign up .password-container
+    const toggleButton = document.querySelector(".password-containerr .toggle-password");
+    const eyeIcon = document.querySelector(".password-containerr .toggle-password i");
+
+    // Debugging: Check if elements exist
+    if (!passwordField || !toggleButton || !eyeIcon) {
+        console.error("One or more elements not found!");
+        return;
+    }
+
+    console.log("Event listeners added!");
+
+    toggleButton.addEventListener("mouseenter", function () {
+        console.log("Hover detected!");
+        passwordField.type = "text"; // Show password
+        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+    });
+
+    toggleButton.addEventListener("mouseleave", function () {
+        console.log("Mouse left the button!");
+        passwordField.type = "password"; // Hide password
+        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+    });
+});

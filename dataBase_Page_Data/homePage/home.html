@@ -45,7 +45,7 @@
             <li class="Btn-Nav">
                 <button class="btn1" onclick="showLogin()"><i class="ri-login-box-line"></i> Login</button> 
             </li>
-            <li class="divider">/</li> <!-- Slash separator -->
+            <li class="nav_divider">/</li> <!-- Slash separator -->
             <li class="Btn-Nav2">
                 <button class="btn2" onclick="showSignup()">
                     <i class="ri-user-add-line"></i> Sign Up
@@ -189,7 +189,13 @@
     </footer>
 
     <!-- Background Overlay -->
-    <div id="overlay" class="overlay" onclick="hideLogin()"></div>
+    <div id="login_overlay" class="overlay" onclick="hideLogin()"></div>  <!-- over lay used for making background blurAn overlay is something that is placed on top of another thing, usually to add or change its appearance, function, or meaning. For example:
+
+    A transparent sheet with extra information can be an overlay on a map.
+    
+    In technology, an image or text can be overlaid on a video or photo.
+    
+    In everyday life, a tablecloth is an overlay on a table.-->
 
     <!-- Login Modal -->
     <div id="loginModal" class="login-container">
@@ -212,18 +218,19 @@
                 </label>
                 <input type="email" id="email" placeholder="you@example.com" required>
             </div>
-            
             <div class="form-group">
                 <label for="password">
                     <i class="fas fa-lock"></i> Password
                 </label>
-                <div class="password-container">
+                <div class="password-containerr">
                     <input type="password" id="password" placeholder="••••••••" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                    <button type="button" class="toggle-password">
                         <i class="far fa-eye"></i>
                     </button>
                 </div>
             </div>
+            
+            
             
             <div class="forgot-password">
                 <a href="#">Forgot Password?</a>
