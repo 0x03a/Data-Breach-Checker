@@ -43,12 +43,15 @@
             <li><a href="contact.html"><i class="ri-chat-3-line"></i> Contact</a></li>
             <li><a href="FAQ's.html"><i class="ri-question-line"></i> FAQ's</a></li>
             <li class="Btn-Nav">
-                <button class="btn1"><i class="ri-login-box-line"></i> Login</button> 
+                <button class="btn1" onclick="showLogin()"><i class="ri-login-box-line"></i> Login</button> 
             </li>
             <li class="divider">/</li> <!-- Slash separator -->
             <li class="Btn-Nav2">
-                <button class="btn2"><i class="ri-user-add-line"></i> Sign Up</button> 
+                <button class="btn2" onclick="showSignup()">
+                    <i class="ri-user-add-line"></i> Sign Up
+                </button> 
             </li>
+            
             
         </ul>
         
@@ -96,6 +99,81 @@
         
     </section>
 
+    <!-- sign up  code-->
+     <!-- SIGN UP MODAL (Initially Hidden) -->
+     
+<div class="overlay" id="overlay"></div>  <!-- Blurred Background Overlay -->
+<div class="container" id="signupModal" style="display: none;">
+    <div class="form-shield"></div> 
+    <div class="signup-box">
+        
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo_part_1"><span class="tilde">~</span></div>
+            <div class="logo_part_2"><i class="fa-solid fa-exclamation" id="Ex"></i></div>
+            <div class="logo_part_3"><span id="eq">=</span></div>
+            <h4 class="heading">Secure Net</h4>
+        </div>
+
+        <!-- Form Heading -->
+        <h2 class="form-title">Create Your Account</h2> 
+        <p class="subtitle">Join SecureNet to protect your digital identity</p>
+
+        <!-- Sign Up Form -->
+        <form action="register.php" method="POST" class="signup-form">
+            <div class="form-group">
+                <label for="fullname"><i class="ri-user-line"></i> Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="ri-mail-line"></i> Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="ri-lock-line"></i> Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="********" required>
+                    <i class="ri-eye-off-line toggle-password" data-target="password"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password"><i class="ri-lock-line"></i> Confirm Password</label>
+                <div class="password-container">
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="********" required>
+                    <i class="ri-eye-off-line toggle-password" data-target="confirm-password"></i>
+                </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms"> I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a> </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+
+        <div class="or-divider">Or continue with</div>
+
+        <div class="social-buttons">
+            <button class="btn google"><i class="ri-google-fill"></i> Google</button>
+            <button class="btn github"><i class="ri-github-fill"></i> GitHub</button>
+        </div>
+
+        <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+<!-- Close Button -->
+<button class="close-btn" onclick="hideSignup()">
+    <i class="fa-solid fa-xmark"></i> <!-- Cross icon -->
+</button>
+
+    </div>
+
+    
+</div>
+
+
 
     
     <footer class="footer">
@@ -110,7 +188,69 @@
         </div>
     </footer>
 
-    
+    <!-- Background Overlay -->
+    <div id="overlay" class="overlay" onclick="hideLogin()"></div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i> Secure Net
+            </div>
+            <button class="close-btn" onclick="hideLogin()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <h1>Login to Your Account</h1>
+        <p class="subtitle">Sign in to SecureNet to protect your digital identity</p>
+        
+        <form class="login-form">
+            <div class="form-group">
+                <label for="email">
+                    <i class="far fa-envelope"></i> Email Address
+                </label>
+                <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" class="login-btn">Login</button>
+            
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+            
+            <div class="social-login">
+                <button type="button" class="google-btn">
+                    <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google">
+                    Google
+                </button>
+                <button type="button" class="github-btn">
+                    <i class="fab fa-github"></i>
+                    GitHub
+                </button>
+            </div>
+            
+            <p class="signup-link">
+                Don't have an account? <a href="#">Sign up</a>
+            </p>
+        </form>
+    </div>
     <script src="../script.js"></script>
 </body>
 </html>
