@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const container = document.querySelector(".background-elements");
+    const interactiveElements = [...document.querySelectorAll("form, input, textarea, button, select")]; // Cached for performance
 
     function createElement(type, left, top, duration) {
         let element = document.createElement("div");
@@ -9,111 +10,74 @@ document.addEventListener("DOMContentLoaded", function () {
         element.style.top = top + "px";
         element.style.animationDuration = duration + "s";
 
-        if (type === "spider-web") {
-            element.innerHTML = "🕸️"; // Spider web emoji
-            element.style.fontSize = "10px";
-            element.style.opacity = Math.random() * 0.5 + 0.5;
-            animateSpiderWeb(element); // Unique floating movement
-        } else if (type === "circle") {
+        if (type === "circle") {
             element.style.borderRadius = "50%";
 
-            // Assign size: 2
-            let sizeOptions = [3];
-            let size = sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
+            let size = 3; // Fixed size
             element.style.width = size + "px";
             element.style.height = size + "px";
 
-            animateFloating(element, true); // Floating effect for circles
+            animateFloating(element, true);
         }
 
-        container.appendChild(element);
+        return element;
     }
 
-    // Generate Circles
-    for (let i = 0; i <200; i++) {
-        createElement("circle", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5);
+    // Batch insert elements using a document fragment for performance
+    function generateElements() {
+        let fragment = document.createDocumentFragment();
+
+        for (let i = 0; i < 200; i++) {
+            fragment.appendChild(createElement("circle", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5));
+        }
+
+        container.appendChild(fragment);
     }
 
-    // Generate Spider Webs
-    for (let i = 0; i < 80; i++) {
-        createElement("spider-web", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5);
-    }
+    generateElements();
 
     function animateFloating(element, changeColor) {
         let x = parseFloat(element.style.left);
         let y = parseFloat(element.style.top);
-        let speedX = (Math.random() - 0.5) * 2; // Smooth movement
-        let speedY = (Math.random() - 0.5) * 2;
-    
+        let speedX = (Math.random() - 0.5) * 6; // Adjusted for faster movement (-3 to 3)
+        let speedY = (Math.random() - 0.5) * 6;
+
         function move() {
             x += speedX;
             y += speedY;
-    
-            // Bounce back within the viewport
+
+            // Bounce within viewport
             if (x < 0 || x > window.innerWidth - parseFloat(element.style.width)) speedX *= -1;
             if (y < 0 || y > window.innerHeight - parseFloat(element.style.height)) speedY *= -1;
-    
-            // Detect if the circle is over a form or input field
-            let interactiveElements = document.querySelectorAll("form, input, textarea, button, select");
-            let isOverlapping = false;
-    
-            interactiveElements.forEach((el) => {
-                let rect1 = element.getBoundingClientRect(); // Circle
-                let rect2 = el.getBoundingClientRect(); // Form element
-    
-                if (
-                    rect1.right > rect2.left &&
-                    rect1.left < rect2.right &&
-                    rect1.bottom > rect2.top &&
-                    rect1.top < rect2.bottom
-                ) {
-                    isOverlapping = true;
-    
-                    // Reverse direction if overlapping
-                    speedX *= -1;
-                    speedY *= -1;
-                }
+
+            // Detect overlap with interactive elements
+            let rect1 = element.getBoundingClientRect();
+            let isOverlapping = interactiveElements.some(el => {
+                let rect2 = el.getBoundingClientRect();
+                return rect1.right > rect2.left && rect1.left < rect2.right &&
+                       rect1.bottom > rect2.top && rect1.top < rect2.bottom;
             });
-    
-            // Move the element
-            element.style.left = x + "px";
-            element.style.top = y + "px";
-    
-            // Change circle color dynamically (Only Light Gray to Light Black)
+
+            if (isOverlapping) {
+                speedX *= -1;
+                speedY *= -1;
+            }
+
+            // Apply movement using transform for smoother rendering
+            element.style.transform = `translate(${x}px, ${y}px)`;
+
+            // Change color dynamically
             if (changeColor) {
                 let grayScale = Math.floor(((x + y) / (window.innerWidth + window.innerHeight)) * 105) + 150;
-                element.style.transition = "background-color 0.3s ease-in-out"; // Smooth transition
                 element.style.backgroundColor = `rgb(${grayScale}, ${grayScale}, ${grayScale})`;
             }
-    
+
             requestAnimationFrame(move);
         }
         move();
     }
-    
-        // Animate Spider Webs Floating & Moving Randomly
-    function animateSpiderWeb(element) {
-        let x = parseFloat(element.style.left);
-        let y = parseFloat(element.style.top);
-        let angle = Math.random() * Math.PI * 2;
-        let speed = Math.random() * 2 + 0.5; // Slightly slower movement
-
-        function floatWeb() {
-            x += Math.cos(angle) * speed;
-            y += Math.sin(angle) * speed;
-
-            // Keep within screen bounds
-            if (x < 0 || x > window.innerWidth - 30) angle = Math.PI - angle;
-            if (y < 0 || y > window.innerHeight - 30) angle = -angle;
-
-            element.style.left = x + "px";
-            element.style.top = y + "px";
-
-            requestAnimationFrame(floatWeb);
-        }
-        floatWeb();
-    }
 });
+
 
 // reset form validation
 document.addEventListener("DOMContentLoaded", function () {
