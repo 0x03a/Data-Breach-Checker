@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
             element.style.borderRadius = "50%";
 
             // Assign size: 2
-            let sizeOptions = [2];
+            let sizeOptions = [3];
             let size = sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
             element.style.width = size + "px";
             element.style.height = size + "px";
@@ -30,12 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Generate Circles
-    for (let i = 0; i <80; i++) {
+    for (let i = 0; i <200; i++) {
         createElement("circle", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5);
     }
 
     // Generate Spider Webs
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 80; i++) {
         createElement("spider-web", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5);
     }
 

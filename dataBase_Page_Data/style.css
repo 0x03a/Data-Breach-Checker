@@ -1245,20 +1245,19 @@ text-decoration: underline;
 
 /* ANIMATION  */
 
-
 @keyframes moveRandom {
     0% { transform: translate(0, 0); }
     25% { transform: translate(30px, -40px); }
     50% { transform: translate(-30px, 40px); }
     75% { transform: translate(40px, 30px); }
     100% { transform: translate(-40px, -30px); }
-}
+  }
 
-@keyframes float {
+  @keyframes float {
     0% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-20px) rotate(180deg); }
     100% { transform: translateY(0px) rotate(360deg); }
-}
+  }
 
 
 
