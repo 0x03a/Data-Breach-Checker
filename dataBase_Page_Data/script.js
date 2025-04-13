@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Background animation elements
     const container = document.querySelector(".background-elements");
-    const interactiveElements = [...document.querySelectorAll("form, input, textarea, button, select")]; // Cached for performance
+    const interactiveElements = [...document.querySelectorAll("form, input, textarea, button, select")];
 
     function createElement(type, left, top, duration) {
         let element = document.createElement("div");
@@ -12,34 +13,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (type === "circle") {
             element.style.borderRadius = "50%";
-
-            let size = 3; // Fixed size
+            let size = 3;
             element.style.width = size + "px";
             element.style.height = size + "px";
-
             animateFloating(element, true);
         }
 
         return element;
     }
 
-    // Batch insert elements using a document fragment for performance
     function generateElements() {
         let fragment = document.createDocumentFragment();
-
         for (let i = 0; i < 200; i++) {
             fragment.appendChild(createElement("circle", Math.random() * window.innerWidth, Math.random() * window.innerHeight, Math.random() * 10 + 5));
         }
-
         container.appendChild(fragment);
     }
 
-    generateElements();
+    if (container) {
+        generateElements();
+    }
 
     function animateFloating(element, changeColor) {
         let x = parseFloat(element.style.left);
         let y = parseFloat(element.style.top);
-        let speedX = (Math.random() - 0.5) * 6; // Adjusted for faster movement (-3 to 3)
+        let speedX = (Math.random() - 0.5) * 6;
         let speedY = (Math.random() - 0.5) * 6;
 
         function move() {
@@ -76,333 +74,278 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         move();
     }
-});
 
+    // Footer show/hide functionality
+    let lastScrollTop = 0;
+    const footer = document.querySelector("footer");
 
-let lastScrollTop = 0;
-const footer = document.querySelector("footer");
+    if (footer) {
+        window.addEventListener("scroll", function () {
+            let scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-window.addEventListener("scroll", function () {
-    let scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                // Scrolling down - show footer
+                footer.style.bottom = "0";
+            } else {
+                // Scrolling up - hide footer (only if not hovered)
+                if (!footer.matches(":hover")) {
+                    footer.style.bottom = "-60px";
+                }
+            }
 
-    if (scrollTop > lastScrollTop) {
-        // Scrolling down - show footer
-        footer.style.bottom = "0";
-    } else {
-        // Scrolling up - hide footer (only if not hovered)
-        if (!footer.matches(":hover")) {
-            footer.style.bottom = "-60px";
-        }
-    }
+            lastScrollTop = Math.max(scrollTop, 0); // Prevent negative values
+        });
 
-    lastScrollTop = Math.max(scrollTop, 0); // Prevent negative values
-});
+        // Prevent hiding when hovering over footer
+        footer.addEventListener("mouseenter", function () {
+            footer.style.bottom = "0";
+        });
 
-// Prevent hiding when hovering over footer
-footer.addEventListener("mouseenter", function () {
-    footer.style.bottom = "0";
-});
-
-footer.addEventListener("mouseleave", function () {
-    footer.style.bottom = "-60px";
-});
-
-// Keep the footer open when hovered
-footer.addEventListener("mouseenter", function() {
-    footer.style.bottom = "0";
-});
-
-// Hide footer when mouse leaves, but only if scrolling up
-footer.addEventListener("mouseleave", function() {
-    if (window.scrollY <= lastScrollTop) {
-        footer.style.bottom = "-60px";
-    }
-});
-
-const form = document.querySelector("form"); // Assuming these are within a form element
-const togglePasswordButtons = form.querySelectorAll(".toggle-password");
-
-togglePasswordButtons.forEach(button => {
-    // Show password on mouse hover
-    button.addEventListener("mouseenter", function() {
-        const targetId = this.getAttribute("data-target");
-        const passwordField = form.querySelector(`#${targetId}`);
-        
-        passwordField.type = "text";
-        this.classList.remove("ri-eye-off-line");
-        this.classList.add("ri-eye-line");
-    });
-    
-    // Hide password when mouse leaves
-    button.addEventListener("mouseleave", function() {
-        const targetId = this.getAttribute("data-target");
-        const passwordField = form.querySelector(`#${targetId}`);
-        
-        passwordField.type = "password";
-        this.classList.remove("ri-eye-line");
-        this.classList.add("ri-eye-off-line");
-    });
-});
-function showSignup() {
-    const signupForm = document.querySelector(".signup-form");
-    
-    if (signupForm) {
-        // Reset the form
-        signupForm.reset();
-        
-        // Clear all input values
-        const inputs = signupForm.querySelectorAll("input");
-        inputs.forEach(input => {
-            input.value = "";
-            
-            // Instead of disabling autocomplete, explicitly enable it
-            // This allows browser suggestions but prevents automatic filling
-            input.setAttribute("autocomplete", "on");
-            
-            // Reset checkbox and radio if needed
-            if (input.type === "checkbox" || input.type === "radio") {
-                input.checked = false;
+        footer.addEventListener("mouseleave", function () {
+            if (window.scrollY <= lastScrollTop) {
+                footer.style.bottom = "-60px";
             }
         });
-        
-        // Special handling for specific fields
-        const emailInput = signupForm.querySelector("#email");
-        if (emailInput) {
-            emailInput.setAttribute("autocomplete", "email");
-        }
-        
-        const nameInput = signupForm.querySelector("#fullname");
-        if (nameInput) {
-            nameInput.setAttribute("autocomplete", "name");
-        }
-        
-        // Password fields should still be secure
-        const passwordInputs = signupForm.querySelectorAll('input[type="password"]');
-        passwordInputs.forEach(input => {
-            input.setAttribute("autocomplete", "new-password");
+    }
+
+    // Menu toggle functionality
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menu = document.querySelector('.menu');
+    const body = document.body;
+    const overlay = document.getElementById('overlay');
+
+    if (menuToggle && menu) {
+        menuToggle.addEventListener('click', function() {
+            menuToggle.classList.toggle('active');
+            menu.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking on regular links (links without onclick attributes)
+        const menuLinks = document.querySelectorAll('.menu a:not([onclick])');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                menu.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Handle mobile auth links
+        const authLinks = document.querySelectorAll('.mobile-auth-item a');
+        authLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Prevent default to handle modal display manually
+                e.preventDefault();
+                
+                // Get the function name from onclick attribute
+                const onclickAttr = this.getAttribute('onclick');
+                
+                // Execute the function (showLogin or showSignup)
+                if (onclickAttr && onclickAttr.includes('showLogin')) {
+                    showLogin();
+                    // Close the menu after modal is shown
+                    menuToggle.classList.remove('active');
+                    menu.classList.remove('active');
+                    body.classList.remove('menu-open');
+                } else if (onclickAttr && onclickAttr.includes('showSignup')) {
+                    showSignup();
+                    // Close the menu after modal is shown
+                    menuToggle.classList.remove('active');
+                    menu.classList.remove('active');
+                    body.classList.remove('menu-open');
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = menu.contains(event.target) || menuToggle.contains(event.target);
+            if (!isClickInside && menu.classList.contains('active')) {
+                menuToggle.classList.remove('active');
+                menu.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
         });
     }
+
+    // Password toggle functionality (unified for all password fields)
+    const toggleButtons = document.querySelectorAll(".toggle-password");
     
+    toggleButtons.forEach(button => {
+        if (button) {
+            const targetId = button.getAttribute("data-target");
+            const passwordField = document.getElementById(targetId);
+            
+            if (passwordField) {
+                // Show password on mouse hover
+                button.addEventListener("mouseenter", function() {
+                    passwordField.type = "text";
+                    this.classList.remove("ri-eye-off-line");
+                    this.classList.add("ri-eye-line");
+                });
+                
+                // Hide password when mouse leaves
+                button.addEventListener("mouseleave", function() {
+                    passwordField.type = "password";
+                    this.classList.remove("ri-eye-line");
+                    this.classList.add("ri-eye-off-line");
+                });
+            }
+        }
+    });
+
+    // Sign up form validation
+    const signupForm = document.querySelector(".auth-form[action='register.php']");
+    if (signupForm) {
+        signupForm.addEventListener("submit", function(event) {
+            const fullname = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirm-password").value.trim();
+            const terms = document.getElementById("terms").checked;
+
+            // Regex for validations
+            const namePattern = /^[A-Za-z\s]+$/;
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const passwordPattern = /^(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/;
+
+            // Full Name validation
+            if (!namePattern.test(fullname)) {
+                alert("Full Name should contain only letters and spaces.");
+                event.preventDefault();
+                return false;
+            }
+
+            // Email validation
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address (e.g., user@example.com).");
+                event.preventDefault();
+                return false;
+            }
+
+            // Password validation
+            if (!passwordPattern.test(password)) {
+                alert("Password must be exactly 8 characters long and contain at least one special character (@, $, !, %, *, ?, &).");
+                event.preventDefault();
+                return false;
+            }
+
+            // Confirm password validation
+            if (password !== confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                event.preventDefault();
+                return false;
+            }
+
+            // Terms & Conditions checkbox validation
+            if (!terms) {
+                alert("You must agree to the Terms and Privacy Policy.");
+                event.preventDefault();
+                return false;
+            }
+
+            return true; // If all validations pass
+        });
+    }
+
+    // Login form validation
+    const loginForm = document.querySelector(".auth-form[action='login.php']");
+    if (loginForm) {
+        loginForm.addEventListener("submit", function(event) {
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value.trim();
+
+            // Regex for email validation
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            // Email validation
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address (e.g., user@example.com).");
+                event.preventDefault();
+                return false;
+            }
+
+            // Password validation (Minimum 8 characters)
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters long.");
+                event.preventDefault();
+                return false;
+            }
+
+            return true; // If all validations pass
+        });
+    }
+
+    // Password breach check functionality
+    const searchBtn = document.querySelector('.search-btn');
+    const searchInput = document.querySelector('.search-input');
+    
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', function() {
+            const password = searchInput.value.trim();
+            if (password.length === 0) {
+                alert("Please enter a password to check.");
+                return;
+            }
+            
+            // Here you would typically make an API call to check the password
+            // For demo purposes, we'll just show an alert
+            alert("Password check submitted. This would normally be checked against a secure database.");
+            searchInput.value = ''; // Clear the input for security
+        });
+    }
+
+    // Close modals when clicking on overlay
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            hideLogin();
+            hideSignup();
+        });
+    }
+
+    // Close modals with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideLogin();
+            hideSignup();
+        }
+    });
+});
+
+// Modal functions (kept outside the DOMContentLoaded to be accessible globally)
+function showSignup() {
     document.getElementById("signupModal").style.display = "block";
     document.getElementById("overlay").style.display = "block";
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+    
+    // Reset the form if it exists
+    const signupForm = document.querySelector(".auth-form[action='register.php']");
+    if (signupForm) {
+        signupForm.reset();
+    }
 }
-
 
 function hideSignup() {
     document.getElementById("signupModal").style.display = "none";
     document.getElementById("overlay").style.display = "none";
+    document.body.style.overflow = ""; // Restore scrolling
 }
 
+function showLogin() {
+    document.getElementById("loginModal").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+    
+    // Reset the form if it exists
+    const loginForm = document.querySelector(".auth-form[action='login.php']");
+    if (loginForm) {
+        loginForm.reset();
+    }
+}
 
-// in login form toggle eye
-document.addEventListener("DOMContentLoaded", function () {
-    const pwdField = document.getElementById("password");
-    const toggleBtn = document.querySelector(".toggle-password");
-    const icon = toggleBtn.querySelector("i");
-
-    toggleBtn.addEventListener("mouseenter", function () {
-        pwdField.type = "text"; // Show password when hovering
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-    });
-
-    toggleBtn.addEventListener("mouseleave", function () {
-        pwdField.type = "password"; // Hide password when not hovering
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-    });
-});
-
-// Show login modal  // Function to show the login modal
-        function showLogin() {
-            const loginForm = document.getElementById("loginModal");
-            const overlay = document.getElementById("overlay");
-
-            if (loginForm) {
-                // Reset input fields including password fields
-                loginForm.querySelectorAll("input[type='text'], input[type='email'], input[type='password']").forEach(input => {
-                    input.value = "";
-                });
-
-                // Ensure checkboxes and radio buttons are unchecked
-                loginForm.querySelectorAll("input[type='checkbox'], input[type='radio']").forEach(input => {
-                    input.checked = false;
-                });
-
-                // Show the login form and overlay
-                loginForm.style.display = "block";
-                overlay.style.display = "block";
-            }
-        }
-
-
-// sign up validations
-
-/*
- Prevents form submission if any field fails validation
- Displays alert messages for incorrect input
- Uses regex for secure validation
- Enhances user experience by guiding them on proper input format
-
-This ensures only valid data is submitted!
-
-*/
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector(".signup-form").addEventListener("submit", function (event) {
-        const fullname = document.getElementById("fullname").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const confirmPassword = document.getElementById("confirm-password").value.trim();
-        const terms = document.getElementById("terms").checked;
-
-        // Regex for full name validation (Only letters & spaces)
-        const namePattern = /^[A-Za-z\s]+$/;
-
-        // Regex for email validation
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        // Regex for strong password validation (Exactly 8 characters with at least 1 special character)
-        const passwordPattern = /^(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/;
-
-        // Full Name validation
-        if (!namePattern.test(fullname)) {
-            alert("Full Name should contain only letters and spaces.");
-            event.preventDefault();
-            return false;
-        }
-
-        // Email validation
-        if (!emailPattern.test(email)) {
-            alert("Please enter a valid email address (e.g., user@example.com).");
-            event.preventDefault();
-            return false;
-        }
-
-        // Password validation
-        if (!passwordPattern.test(password)) {
-            alert("Password must be exactly 8 characters long and contain at least one special character (@, $, !, %, *, ?, &).");
-            event.preventDefault();
-            return false;
-        }
-
-        // Confirm password validation
-        if (password !== confirmPassword) {
-            alert("Passwords do not match. Please try again.");
-            event.preventDefault();
-            return false;
-        }
-
-        // Terms & Conditions checkbox validation
-        if (!terms) {
-            alert("You must agree to the Terms and Privacy Policy.");
-            event.preventDefault();
-            return false;
-        }
-
-        return true; // If all validations pass
-    });
-});
-
-       
-      
-// Hide login modal
 function hideLogin() {
     document.getElementById("loginModal").style.display = "none";
     document.getElementById("overlay").style.display = "none";
+    document.body.style.overflow = ""; // Restore scrolling
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Select the elements using their full path
-    const passwordField = document.querySelector(".password-containerr input[type='password']"); // i have to put containerr bcz when i write .password-container it mixes it with sign up .password-container
-    const toggleButton = document.querySelector(".password-containerr .toggle-password");
-    const eyeIcon = document.querySelector(".password-containerr .toggle-password i");
-
-    // Debugging: Check if elements exist
-    if (!passwordField || !toggleButton || !eyeIcon) {
-        console.error("One or more elements not found!");
-        return;
-    }
-
-    console.log("Event listeners added!");
-
-    toggleButton.addEventListener("mouseenter", function () {
-        console.log("Hover detected!");
-        passwordField.type = "text"; // Show password
-        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-    });
-
-    toggleButton.addEventListener("mouseleave", function () {
-        console.log("Mouse left the button!");
-        passwordField.type = "password"; // Hide password
-        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-    });
-});
-
-function validateFields(event) {
-    // Select email and password fields
-    const email = document.querySelector(".login-form .form-group #email").value.trim();
-    const password = document.querySelector(".password-containerr #password").value.trim();
-
-    // Regular expression for a valid email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    // Regular expression for a strong password (Min: 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character)
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    // Check if fields are empty
-    if (email === "" || password === "") {
-        alert("Please enter both email and password before proceeding.");
-        event.preventDefault();
-        return false;
-    }
-
-    // Validate email format
-    if (!emailPattern.test(email)) {
-        alert("Please enter a valid email address (e.g., example@domain.com).");
-        event.preventDefault();
-        return false;
-    }
-
-    // Validate password format
-    if (!passwordPattern.test(password)) {
-        alert("Password must be at least 8 characters long, including an uppercase letter, a lowercase letter, a number, and a special character.");
-        event.preventDefault();
-        return false;
-    }
-
-    return true; // Allow navigation if all conditions are met
-}
-
-
-// Login Validaion
-/*
- Prevents form submission if email/password are invalid
- Uses regex to check valid email format
- Ensures password is at least 8 characters
- Shows alert messages if validation fails
-*/
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector(".login-form").addEventListener("submit", function (event) {
-        const email = document.querySelector(".login-form .form-group #email").value.trim();
-        const password = document.querySelector(".password-containerr #password").value.trim();
-
-        // Regex for email validation
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        // Email validation
-        if (!emailPattern.test(email)) {
-            alert("Please enter a valid email address (e.g., userexample@.com).");
-            event.preventDefault();
-            return false;
-        }
-
-        // Password validation (Minimum 8 characters)
-        if (password.length < 8) {
-            alert("Password must be at least 8 characters long.");
-            event.preventDefault();
-            return false;
-        }
-
-        return true; // If all validations pass
-    });
-});
