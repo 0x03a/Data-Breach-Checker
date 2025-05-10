@@ -1,7 +1,27 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () { // AbstractApi used for email validation
     // Background animation elements
     const container = document.querySelector(".background-elements");
     const interactiveElements = [...document.querySelectorAll("form, input, textarea, button, select")];
+
+    // AbstractAPI Email Validation
+    const ABSTRACTAPI_KEY = 'f659f97cd12947d3aad411565c4538ce';
+    async function verifyEmailWithAbstractAPI(email) {
+        try {
+            const url = `https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACTAPI_KEY}&email=${encodeURIComponent(email)}`;
+            const response = await fetch(url); // GET request will work, but POST request will not work
+            if (!response.ok) {
+                console.log('AbstractAPI error:', response.status, response.statusText);
+                return false;
+            }
+            const data = await response.json();
+            console.log('AbstractAPI response:', data);
+            // Accept only if deliverability is 'DELIVERABLE'
+            return data.deliverability === 'DELIVERABLE';
+        } catch (e) {
+            console.log('AbstractAPI exception:', e);
+            return false;
+        }
+    }
 
     function createElement(type, left, top, duration) {
         let element = document.createElement("div");
@@ -198,82 +218,69 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sign up form validation
     const signupForm = document.querySelector(".auth-form[action='register.php']");
     if (signupForm) {
-        signupForm.addEventListener("submit", function(event) {
+        signupForm.addEventListener("submit", async function(event) {
+            event.preventDefault(); // Always prevent default, submit only if all checks pass
             const fullname = document.getElementById("fullname").value.trim();
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value.trim();
             const confirmPassword = document.getElementById("confirm-password").value.trim();
             const terms = document.getElementById("terms").checked;
 
-            // Regex for validations
             const namePattern = /^[A-Za-z\s]+$/;
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            const passwordPattern = /^(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/;
+            const passwordPattern = /^.{8}$/;
 
-            // Full Name validation
             if (!namePattern.test(fullname)) {
                 alert("Full Name should contain only letters and spaces.");
-                event.preventDefault();
                 return false;
             }
 
-            // Email validation
-            if (!emailPattern.test(email)) {
-                alert("Please enter a valid email address (e.g., user@example.com).");
-                event.preventDefault();
+            // Only AbstractAPI email validation
+            const isValid = await verifyEmailWithAbstractAPI(email);
+            if (!isValid) {
+                alert("Please enter a valid, deliverable email address.");
                 return false;
             }
 
-            // Password validation
             if (!passwordPattern.test(password)) {
-                alert("Password must be exactly 8 characters long and contain at least one special character (@, $, !, %, *, ?, &).");
-                event.preventDefault();
+                alert("Password must be exactly 8 characters long.");
                 return false;
             }
 
-            // Confirm password validation
             if (password !== confirmPassword) {
                 alert("Passwords do not match. Please try again.");
-                event.preventDefault();
                 return false;
             }
 
-            // Terms & Conditions checkbox validation
             if (!terms) {
                 alert("You must agree to the Terms and Privacy Policy.");
-                event.preventDefault();
                 return false;
             }
 
-            return true; // If all validations pass
+            signupForm.submit(); // All checks passed, submit form
         });
     }
 
     // Login form validation
     const loginForm = document.querySelector(".auth-form[action='login.php']");
     if (loginForm) {
-        loginForm.addEventListener("submit", function(event) {
+        loginForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
             const email = document.getElementById("login-email").value.trim();
             const password = document.getElementById("login-password").value.trim();
 
-            // Regex for email validation
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-            // Email validation
-            if (!emailPattern.test(email)) {
-                alert("Please enter a valid email address (e.g., user@example.com).");
-                event.preventDefault();
+            // Only AbstractAPI email validation
+            const isValid = await verifyEmailWithAbstractAPI(email);
+            if (!isValid) {
+                alert("Please enter a valid, deliverable email address.");
                 return false;
             }
 
-            // Password validation (Minimum 8 characters)
-            if (password.length < 8) {
-                alert("Password must be at least 8 characters long.");
-                event.preventDefault();
+            if (password.length !== 8) {
+                alert("Password must be exactly 8 characters long.");
                 return false;
             }
 
-            return true; // If all validations pass
+            loginForm.submit();
         });
     }
 

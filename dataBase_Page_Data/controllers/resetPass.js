@@ -80,20 +80,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // reset form validation
+// Only AbstractAPI or no email validation here. Remove regex/manual validation.
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector("form[action='send-reset-link.php']").addEventListener("submit", function (event) {
+    document.querySelector("form[action='send-reset-link.php']").addEventListener("submit", async function (event) {
         const email = document.getElementById("email").value.trim();
 
-        // Regex for email validation
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        // Email validation
-        if (!emailPattern.test(email)) {
-            alert("Please enter a valid email address (e.g., user@example.com).");
-            event.preventDefault();
-            return false;
+        // AbstractAPI Email Validation
+        const ABSTRACTAPI_KEY = 'f659f97cd12947d3aad411565c4538ce';
+        async function verifyEmailWithAbstractAPI(email) {
+            try {
+                const url = `https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACTAPI_KEY}&email=${encodeURIComponent(email)}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    alert('Email validation service error.');
+                    event.preventDefault();
+                    return false;
+                }
+                const data = await response.json();
+                if (data.deliverability !== 'DELIVERABLE') {
+                    alert('Please enter a valid, deliverable email address.');
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            } catch (e) {
+                alert('Email validation exception.');
+                event.preventDefault();
+                return false;
+            }
         }
-
-        return true; // If validation passes
+        await verifyEmailWithAbstractAPI(email);
     });
 });
