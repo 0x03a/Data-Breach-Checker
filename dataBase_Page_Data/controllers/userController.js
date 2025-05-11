@@ -2,20 +2,9 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const Password = require('../models/Password');
 
-const ADMIN_EMAIL = 'f223365@cfd.nu.edu.pk';
 
-// On server start, ensure exactly one admin exists
-(async () => {
-  const admin = await User.findOne({ isAdmin: true });
-  if (!admin) {
-    const hashedPassword = await bcrypt.hash('@123Insha', 10);
-    await User.create({ fullname: 'Inshal', email: ADMIN_EMAIL, password: hashedPassword, isAdmin: true });
-  } else if (admin.email !== ADMIN_EMAIL) {
-    // If admin exists but with wrong email, update it
-    admin.email = ADMIN_EMAIL;
-    await admin.save();
-  }
-})();
+
+
 
 exports.createUser = async (req, res) => {
   try {
@@ -24,7 +13,7 @@ exports.createUser = async (req, res) => {
     if (isAdmin) {
       // Only allow admin creation if no admin exists and email matches
       const adminCount = await User.countDocuments({ isAdmin: true });
-      if (adminCount > 0 || email !== ADMIN_EMAIL) {
+      if (adminCount > 0 || email !== 'inshal@gmail.com') {
         return res.status(400).json({ error: 'Cannot create another admin user.' });
       }
     }
@@ -62,7 +51,7 @@ exports.updateUser = async (req, res) => {
   if (user.isAdmin) {
     // Email can be updated, but must remain unique and not become another admin
     if (email && email !== user.email) {
-      if (email !== ADMIN_EMAIL) {
+      if (email !== 'inshal@gmail.com') {
         return res.status(400).json({ error: 'Admin email must remain the designated admin email.' });
       }
       const existingEmail = await User.findOne({ email });

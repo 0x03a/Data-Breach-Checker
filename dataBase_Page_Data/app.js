@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const passwordController = require('./controllers/passwordController');
 const User = require('./models/User');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 
@@ -49,6 +50,17 @@ mongoose.connect('mongodb://localhost:27017/data_breach_checker')
   console.log('Successfully connected to MongoDB.');
   // Initialize passwords from MOCK_DATA if database is empty
   await passwordController.initializePasswords();
+  // Remove any existing user with the same email
+  await User.deleteOne({ email: 'inshal@gmail.com' });
+  // Then create the hardcoded admin user with hashed password
+  const hashedPassword = await bcrypt.hash('@123insR', 10);
+  await User.create({
+    fullname: 'inshal',
+    email: 'inshal@gmail.com',
+    password: hashedPassword,
+    isAdmin: true
+  });
+  console.log('Hardcoded admin user inshal@gmail.com created.');
 })
 .catch((error) => {
   console.error('Error connecting to MongoDB:', error);

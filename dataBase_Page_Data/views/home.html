@@ -118,7 +118,7 @@
         <h2 class="auth-title">Create Your Account</h2>
         <p class="auth-subtitle">Join SecureNet to protect your digital identity</p>
         
-        <form class="auth-form" action="/auth/register" method="POST">
+        <form class="auth-form" id="signup-form" action="#">
             <div class="form-group">
                 <label for="fullname"><i class="ri-user-line"></i> Full Name</label>
                 <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
@@ -188,7 +188,7 @@
         <h2 class="auth-title">Login to Your Account</h2>
         <p class="auth-subtitle">Sign in to SecureNet to protect your digital identity</p>
         
-        <form class="auth-form" action="/auth/login" method="POST">
+        <form class="auth-form" action="/auth/login" method="POST" onsubmit="return false;">
             <div class="form-group">
                 <label for="login-email"><i class="ri-mail-line"></i> Email Address</label>
                 <input type="email" id="login-email" name="email" placeholder="you@example.com" required>
@@ -550,7 +550,7 @@
       document.body.style.overflow = "hidden";
       hideUpdateProfileBtn();
       // Reset the form if it exists
-      const signupForm = document.querySelector(".auth-form[action='/auth/register']");
+      const signupForm = document.querySelector(".auth-form[action='#']");
       if (signupForm) {
           signupForm.reset();
       }
@@ -581,6 +581,87 @@
 
     // On page load, check session
     checkSession();
+
+    // Helper function for AbstractAPI email validation
+    async function verifyEmailWithAbstractAPI(email) {
+        try {
+            const ABSTRACTAPI_KEY = 'f659f97cd12947d3aad411565c4538ce';
+            const url = `https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACTAPI_KEY}&email=${encodeURIComponent(email)}`;
+            const response = await fetch(url);
+            if (!response.ok) return false;
+            const data = await response.json();
+            return data.deliverability === 'DELIVERABLE';
+        } catch {
+            return false;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const signupForm = document.getElementById("signup-form");
+        if (signupForm) {
+            signupForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                const fullname = document.getElementById("fullname").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const password = document.getElementById("password").value.trim();
+                const confirmPassword = document.getElementById("confirm-password").value.trim();
+                const terms = document.getElementById("terms").checked;
+
+                const namePattern = /^[A-Za-z\s]+$/;
+                const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+                if (!namePattern.test(fullname)) {
+                    alert("Full Name should contain only letters and spaces.");
+                    return false;
+                }
+
+                // Only AbstractAPI email validation
+                const isValid = await verifyEmailWithAbstractAPI(email);
+                if (!isValid) {
+                    alert("Please enter a valid, deliverable email address.");
+                    return false;
+                }
+
+                if (!passwordPattern.test(password)) {
+                    alert("Password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.");
+                    return false;
+                }
+
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match. Please try again.");
+                    return false;
+                }
+
+                if (!terms) {
+                    alert("You must agree to the Terms and Privacy Policy.");
+                    return false;
+                }
+
+                try {
+                    // No breach check here, just signup
+                    const response = await fetch('/auth/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fullname, email, password })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert('Account created successfully!');
+                        // Store the token
+                        sessionStorage.setItem('token', data.token);
+                        // Refresh the page to update UI
+                        window.location.reload();
+                    } else {
+                        const error = await response.json();
+                        alert(error.message || 'Failed to create account');
+                    }
+                } catch (error) {
+                    alert('An error occurred during signup. Please try again.');
+                }
+            });
+        }
+    });
     </script>
 
 </body>
