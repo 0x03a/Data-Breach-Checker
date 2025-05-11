@@ -36,14 +36,14 @@
             <li><a href="database.html"><i class="ri-database-2-line"></i> DataBase</a></li>
             <li><a href="contact.html"><i class="ri-chat-3-line"></i> Contact</a></li>
             <li><a href="FAQ's.html"><i class="ri-question-line"></i> FAQ's</a></li>
-            
-            <!-- Mobile Auth Links (These will only be visible in mobile view through CSS) -->
-            <li class="mobile-auth-item"><a href="#" onclick="showLogin()"><i class="ri-login-box-line"></i> Login</a></li>
-            <li class="mobile-auth-item"><a href="#" onclick="showSignup()"><i class="ri-user-add-line"></i> Sign Up</a></li>
+            <!-- Only one set of mobile auth items -->
+            <li class="mobile-auth-item" id="mobileLoginItem"><a href="#" onclick="showLogin()"><i class="ri-login-box-line"></i> Login123</a></li>
+            <li class="mobile-auth-item" id="mobileSignupItem"><a href="#" onclick="showSignup()"><i class="ri-user-add-line"></i> Sign Up</a></li>
+            <li class="mobile-auth-item" id="mobileLogoutItem" style="display:none;"><a href="#" id="mobileLogoutBtn"><i class="ri-logout-box-line"></i> Logout</a></li>
         </ul>
         
-        <!-- Desktop Auth Buttons -->
-        <div class="desktop-auth" style="display:flex;align-items:center;gap:8px;min-width:220px;">
+        <!-- Desktop Auth Buttons: only for desktop, not duplicated in .menu -->
+        <div class="desktop-auth">
             <button class="btn1" id="loginNavBtn" style="display:none;" onclick="showLogin()">
                 <i class="ri-login-box-line"></i> <span class="btn-text">Login</span>
             </button>
@@ -51,8 +51,6 @@
             <button class="btn2" id="signupNavBtn" style="display:none;" onclick="showSignup()">
                 <i class="ri-user-add-line"></i> <span class="btn-text">Sign Up</span>
             </button>
-            <!-- Update Profile Button (shown only for logged-in, non-admin users) -->
-            <button class="btn btn-primary btn-sm ms-2" id="userUpdateProfileBtn" style="display:none;">Update Profile</button>
             <!-- Logout button (always shown for logged-in users) -->
             <button class="btn btn-outline-light btn-sm ms-2" id="logoutBtn" style="display:none;"><i class="ri-logout-box-line"></i> Logout</button>
             <button id="settingsIcon" title="Settings" style="background:none;border:none;cursor:pointer;margin-left:10px;display:none;"><i class="ri-settings-3-line" style="font-size:1.5rem;"></i></button>
@@ -61,14 +59,14 @@
         </div>
         
         <!-- Mobile Menu Toggle -->
-        <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu(event)">
             <span class="menu-toggle-line"></span>
             <span class="menu-toggle-line"></span>
             <span class="menu-toggle-line"></span>
         </button>
     </nav>
 
-    <div class="background-elements">
+    <div class="background-elements">image.png
         <div class="circle"></div>
     </div>
     
@@ -235,7 +233,7 @@
     
     <!-- Settings Modal -->
     <div class="auth-modal" id="settingsModal" style="display:none;z-index:1001;">
-        <div class="auth-header">
+        <div class="auth-header" >
             <h2 class="auth-title">Update Profile</h2>
             <button class="close-btn" onclick="hideSettings()">
                 <i class="fa-solid fa-xmark"></i>
@@ -293,6 +291,13 @@
       </div>
     </div>
     
+    <!-- Floating Update Profile Button (bottom right, small, circular) -->
+    <button class="btn btn-primary d-flex align-items-center justify-content-center"
+            id="userUpdateProfileBtn"
+            style="display:none;position:fixed;bottom:32px;right:32px;z-index:2000;width:56px;height:56px;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,0.2);font-size:1.5rem;padding:0;">
+      <i class="ri-edit-2-line"></i>
+    </button>
+    
     <footer class="footer">
         <div class="footer-content">
             <a href="#">Privacy policy</a> |
@@ -308,38 +313,121 @@
     <!-- Bootstrap JS Bundle (with Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // --- Token-based Auth Logic ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add menu toggle functionality
+        function toggleMenu(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            const menu = document.querySelector('.menu');
+            const menuToggle = document.getElementById('menuToggleBtn');
+            menu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        window.toggleMenu = toggleMenu; // Expose to global for debugging
+
+        // Bind click event to menu toggle button
+        document.getElementById('menuToggleBtn').addEventListener('click', toggleMenu);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.querySelector('.menu');
+            const menuToggle = document.getElementById('menuToggleBtn');
+            if (menu.classList.contains('active') &&
+                !menu.contains(event.target) &&
+                !menuToggle.contains(event.target)) {
+                menu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Prevent menu from closing when clicking inside it
+        document.querySelector('.menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // Close menu when clicking a menu item
+        document.querySelectorAll('.menu a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                // Don't close menu for auth items
+                if (!link.closest('.mobile-auth-item')) {
+                    const menu = document.querySelector('.menu');
+                    const menuToggle = document.getElementById('menuToggleBtn');
+                    menu.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+        });
+    });
+
+    // Hide the update button by default as soon as possible
+    const userUpdateProfileBtn = document.getElementById('userUpdateProfileBtn');
+   
+
     const loginNavBtn = document.getElementById('loginNavBtn');
     const signupNavBtn = document.getElementById('signupNavBtn');
     const navDivider = document.getElementById('navDivider');
-    const userUpdateProfileBtn = document.getElementById('userUpdateProfileBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const authLoadingSpinner = document.getElementById('authLoadingSpinner');
 
-    // Hide all buttons initially, show spinner
-    loginNavBtn.style.display = 'none';
-    signupNavBtn.style.display = 'none';
-    navDivider.style.display = 'none';
-    userUpdateProfileBtn.style.display = 'none';
-    logoutBtn.style.display = 'none';
-    authLoadingSpinner.style.display = 'inline-block';
-
-    // Helper: get token from sessionStorage
     function getToken() {
       return sessionStorage.getItem('token');
     }
-
-    // Helper: set token to sessionStorage
     function setToken(token) {
       sessionStorage.setItem('token', token);
     }
-
-    // Helper: remove token from sessionStorage
     function removeToken() {
       sessionStorage.removeItem('token');
     }
 
-    // Check session using token
+    function hideUpdateProfileBtn() {
+      userUpdateProfileBtn.style.display = 'none';
+     
+      userUpdateProfileBtn.style.visibility = 'hidden';
+    }
+    function showUpdateProfileBtn() {
+       userUpdateProfileBtn.style.display = 'inline-block';
+      userUpdateProfileBtn.style.opacity = '1';
+    }
+
+    function showUserUI() {
+      logoutBtn.style.display = '';
+      showUpdateProfileBtn();
+      loginNavBtn.style.display = 'none';
+      signupNavBtn.style.display = 'none';
+      navDivider.style.display = 'none';
+      // Mobile menu: show logout, hide login/signup
+      if (mobileLoginItem) mobileLoginItem.style.display = 'none';
+      if (mobileSignupItem) mobileSignupItem.style.display = 'none';
+      if (mobileLogoutItem) mobileLogoutItem.style.display = '';
+    }
+    function showAdminUI() {
+      hideUpdateProfileBtn();
+      logoutBtn.style.display = '';
+      loginNavBtn.style.display = 'none';
+      signupNavBtn.style.display = 'none';
+      navDivider.style.display = 'none';
+      // Mobile menu: show logout, hide login/signup
+      if (mobileLoginItem) mobileLoginItem.style.display = 'none';
+      if (mobileSignupItem) mobileSignupItem.style.display = 'none';
+      if (mobileLogoutItem) mobileLogoutItem.style.display = '';
+    }
+    function showGuestUI() {
+      hideUpdateProfileBtn();
+      logoutBtn.style.display = 'none';
+      loginNavBtn.style.display = '';
+      signupNavBtn.style.display = '';
+      navDivider.style.display = '';
+      authLoadingSpinner.style.display = 'none';
+      // Mobile menu: show login/signup, hide logout
+      if (mobileLoginItem) mobileLoginItem.style.display = '';
+      if (mobileSignupItem) mobileSignupItem.style.display = '';
+      if (mobileLogoutItem) mobileLogoutItem.style.display = 'none';
+    }
+
     async function checkSession() {
       const token = getToken();
       if (!token) {
@@ -364,31 +452,6 @@
       }
     }
 
-    function showUserUI() {
-      userUpdateProfileBtn.style.display = '';
-      logoutBtn.style.display = '';
-      loginNavBtn.style.display = 'none';
-      signupNavBtn.style.display = 'none';
-      navDivider.style.display = 'none';
-    }
-    function showAdminUI() {
-      userUpdateProfileBtn.style.display = 'none';
-      logoutBtn.style.display = '';
-      loginNavBtn.style.display = 'none';
-      signupNavBtn.style.display = 'none';
-      navDivider.style.display = 'none';
-    }
-    function showGuestUI() {
-      userUpdateProfileBtn.style.display = 'none';
-      logoutBtn.style.display = 'none';
-      loginNavBtn.style.display = '';
-      signupNavBtn.style.display = '';
-      navDivider.style.display = '';
-      authLoadingSpinner.style.display = 'none';
-      // Only remove token if explicitly logging out
-    }
-
-    // Logout logic
     logoutBtn.onclick = async function() {
       const token = getToken();
       if (token) {
@@ -402,7 +465,7 @@
       }
     };
 
-    // User Update Profile Modal logic
+    // User Update Profile Modal logic (keep as before)
     const userUpdateProfileModal = new bootstrap.Modal(document.getElementById('userUpdateProfileModal'));
     userUpdateProfileBtn.onclick = () => {
         document.getElementById('userUpdateProfileForm').reset();
@@ -456,39 +519,51 @@
         }
     };
 
-    // Login form logic (token-based, robust)
-    const loginForm = document.querySelector(".auth-form[action='/auth/login']");
-    if (loginForm) {
-        loginForm.addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const email = document.getElementById("login-email").value.trim();
-            const password = document.getElementById("login-password").value.trim();
-            // Only AbstractAPI email validation
-            const isValid = await verifyEmailWithAbstractAPI(email);
-            if (!isValid) {
-                alert("Please enter a valid, deliverable email address.");
-                return false;
-            }
-            if (password.length < 8) {
-                alert("Password must be at least 8 characters long.");
-                return false;
-            }
-            // Use fetch to login and handle redirect
-            const res = await fetch('/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const result = await res.json();
-            if (result.success && result.token) {
-                setToken(result.token);
-                // Immediately check session and update UI before redirect
-                await checkSession();
-                window.location.href = '/views/home.html';
-            } else {
-                alert('Login failed');
-            }
-        });
+    // Hide update button when login or signup modal is shown
+    function showLogin() {
+      document.getElementById("loginModal").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+      document.body.style.overflow = "hidden";
+      hideUpdateProfileBtn();
+      // Reset the form if it exists
+      const loginForm = document.querySelector(".auth-form[action='/auth/login']");
+      if (loginForm) {
+          loginForm.reset();
+      }
+    }
+    function showSignup() {
+      document.getElementById("signupModal").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+      document.body.style.overflow = "hidden";
+      hideUpdateProfileBtn();
+      // Reset the form if it exists
+      const signupForm = document.querySelector(".auth-form[action='/auth/register']");
+      if (signupForm) {
+          signupForm.reset();
+      }
+    }
+
+    // Responsive mobile auth logic
+    const mobileLoginItem = document.getElementById('mobileLoginItem');
+    const mobileSignupItem = document.getElementById('mobileSignupItem');
+    const mobileLogoutItem = document.getElementById('mobileLogoutItem');
+    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+
+    // Mobile logout button logic
+    if (mobileLogoutBtn) {
+      mobileLogoutBtn.onclick = async function(e) {
+        e.preventDefault();
+        const token = getToken();
+        if (token) {
+          await fetch('/auth/logout', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          removeToken();
+          showGuestUI();
+          window.location.reload();
+        }
+      };
     }
 
     // On page load, check session

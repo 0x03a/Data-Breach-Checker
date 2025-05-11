@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", async function () { // AbstractApi
             const result = await res.json();
             if (result.success && result.token) {
                 sessionStorage.setItem('token', result.token); // <-- Store token after login
+                if (typeof window.checkSession === 'function') await window.checkSession(); // Update nav immediately
                 if (result.isAdmin) {
                     window.location.href = '/views/admin.html';
                 } else {
@@ -341,14 +342,9 @@ document.addEventListener("DOMContentLoaded", async function () { // AbstractApi
                 };
             }
             mobileAuthItems.forEach(item => {
-                item.innerHTML = `<a href="#" id="logoutBtnMobile"><i class="ri-logout-box-line"></i> Logout</a>`;
-                item.onclick = async function(e) {
-                    e.preventDefault();
-                    const token = sessionStorage.getItem('token');
-                    await fetch('/auth/logout', { method: 'POST', headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
-                    sessionStorage.removeItem('token');
-                    window.location.reload();
-                };
+                if (item.id === 'mobileLogoutItem') {
+                    item.innerHTML = `<a href="#" id="mobileLogoutBtn"><i class="ri-logout-box-line"></i> Logout</a>`;
+                }
             });
             // Show password check input for non-admin users
             if (userPasswordCheckContainer && passwordCheckAlert && !data.user.isAdmin) {
@@ -413,10 +409,6 @@ document.addEventListener("DOMContentLoaded", async function () { // AbstractApi
                     </button>
                 `;
             }
-            mobileAuthItems.forEach(item => {
-                item.innerHTML = '';
-                item.innerHTML = `<a href="#" onclick="showLogin()"><i class="ri-login-box-line"></i> Login</a>`;
-            });
             if (userPasswordCheckContainer) userPasswordCheckContainer.style.display = 'none';
             if (passwordCheckAlert) passwordCheckAlert.style.display = 'none';
         }
