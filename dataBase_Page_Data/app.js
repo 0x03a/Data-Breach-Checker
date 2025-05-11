@@ -54,8 +54,9 @@ mongoose.connect('mongodb://localhost:27017/data_breach_checker')
   // Remove any existing user with the same email
   const existingAdmin = await User.findOne({ email: 'inshal@gmail.com' });
   if (!existingAdmin) {
-    // Then create the hardcoded admin user with hashed password
-    const hashedPassword = await bcrypt.hash('@123insR', 10);
+    // Hash the initial admin password
+    const initialAdminPassword = '@123insR';
+    const hashedPassword = await bcrypt.hash(initialAdminPassword, 10);
     await User.create({
       fullname: 'inshal',
       email: 'inshal@gmail.com',

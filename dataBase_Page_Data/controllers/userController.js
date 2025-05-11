@@ -49,16 +49,9 @@ exports.updateUser = async (req, res) => {
   if (!user) return res.status(404).json({ error: 'User not found.' });
   // Only allow admin update for the admin user
   if (user.isAdmin) {
-    // Email can be updated, but must remain unique and not become another admin
+    // Prevent admin email change
     if (email && email !== user.email) {
-      if (email !== 'inshal@gmail.com') {
-        return res.status(400).json({ error: 'Admin email must remain the designated admin email.' });
-      }
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
-        return res.status(400).json({ error: 'Email already exists.' });
-      }
-      user.email = email;
+      return res.status(400).json({ error: 'Admin email cannot be changed.' });
     }
     if (fullname) user.fullname = fullname;
     if (typeof isAdmin !== 'undefined') user.isAdmin = true; // Always true for admin

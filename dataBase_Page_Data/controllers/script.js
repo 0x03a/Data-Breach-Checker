@@ -338,7 +338,9 @@ document.addEventListener("DOMContentLoaded", async function () { // AbstractApi
                     const token = sessionStorage.getItem('token');
                     await fetch('/auth/logout', { method: 'POST', headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
                     sessionStorage.removeItem('token');
-                    window.location.reload();
+                    // Show guest UI and redirect to home page
+                    showGuestUI();
+                    window.location.href = '/views/home.html';
                 };
             }
             mobileAuthItems.forEach(item => {
