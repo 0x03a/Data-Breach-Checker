@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () { // AbstractApi used for email validation
+document.addEventListener("DOMContentLoaded", async function () { // AbstractApi used for email validation
     // Background animation elements
     const container = document.querySelector(".background-elements");
     const interactiveElements = [...document.querySelectorAll("form, input, textarea, button, select")];
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () { // AbstractApi used 
             const terms = document.getElementById("terms").checked;
 
             const namePattern = /^[A-Za-z\s]+$/;
-            const passwordPattern = /^.{8}$/;
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
             if (!namePattern.test(fullname)) {
                 alert("Full Name should contain only letters and spaces.");
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () { // AbstractApi used 
             }
 
             if (!passwordPattern.test(password)) {
-                alert("Password must be exactly 8 characters long.");
+                alert("Password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.");
                 return false;
             }
 
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () { // AbstractApi used 
     }
 
     // Login form validation
-    const loginForm = document.querySelector(".auth-form[action='login.php']");
+    const loginForm = document.querySelector(".auth-form[action='/auth/login']");
     if (loginForm) {
         loginForm.addEventListener("submit", async function(event) {
             event.preventDefault();
@@ -275,33 +275,34 @@ document.addEventListener("DOMContentLoaded", function () { // AbstractApi used 
                 return false;
             }
 
-            if (password.length !== 8) {
-                alert("Password must be exactly 8 characters long.");
+            // You can adjust password validation as needed
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters long.");
                 return false;
             }
 
-            loginForm.submit();
+            // Use fetch to login and handle redirect
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const result = await res.json();
+            if (result.success && result.token) {
+                sessionStorage.setItem('token', result.token); // <-- Store token after login
+                if (result.isAdmin) {
+                    window.location.href = '/views/admin.html';
+                } else {
+                    window.location.href = '/views/home.html'; // Redirect to home page for user
+                }
+            } else {
+                alert('Login failed');
+            }
         });
     }
 
     // Password breach check functionality
-    const searchBtn = document.querySelector('.search-btn');
-    const searchInput = document.querySelector('.search-input');
-    
-    if (searchBtn && searchInput) {
-        searchBtn.addEventListener('click', function() {
-            const password = searchInput.value.trim();
-            if (password.length === 0) {
-                alert("Please enter a password to check.");
-                return;
-            }
-            
-            // Here you would typically make an API call to check the password
-            // For demo purposes, we'll just show an alert
-            alert("Password check submitted. This would normally be checked against a secure database.");
-            searchInput.value = ''; // Clear the input for security
-        });
-    }
+    // (Removed old logic that showed alert)
 
     // Close modals when clicking on overlay
     if (overlay) {
@@ -318,6 +319,170 @@ document.addEventListener("DOMContentLoaded", function () { // AbstractApi used 
             hideSignup();
         }
     });
+
+    // Show/hide login/signup or logout button based on session
+    try {
+        const token = sessionStorage.getItem('token');
+        const res = await fetch('/auth/session', token ? { headers: { 'Authorization': 'Bearer ' + token } } : {});
+        const data = await res.json();
+        const desktopAuth = document.querySelector('.desktop-auth');
+        const mobileAuthItems = document.querySelectorAll('.mobile-auth-item');
+        const userPasswordCheckContainer = document.getElementById('userPasswordCheckContainer');
+        const passwordCheckAlert = document.getElementById('passwordCheckAlert');
+        if (data.loggedIn) {
+            // Hide login/signup, show logout
+            if (desktopAuth) {
+                desktopAuth.innerHTML = `<button class="btn1" id="logoutBtn"><i class="ri-logout-box-line"></i> <span class="btn-text">Logout</span></button>`;
+                document.getElementById('logoutBtn').onclick = async function() {
+                    const token = sessionStorage.getItem('token');
+                    await fetch('/auth/logout', { method: 'POST', headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
+                    sessionStorage.removeItem('token');
+                    window.location.reload();
+                };
+            }
+            mobileAuthItems.forEach(item => {
+                item.innerHTML = `<a href="#" id="logoutBtnMobile"><i class="ri-logout-box-line"></i> Logout</a>`;
+                item.onclick = async function(e) {
+                    e.preventDefault();
+                    const token = sessionStorage.getItem('token');
+                    await fetch('/auth/logout', { method: 'POST', headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
+                    sessionStorage.removeItem('token');
+                    window.location.reload();
+                };
+            });
+            // Show password check input for non-admin users
+            if (userPasswordCheckContainer && passwordCheckAlert && !data.user.isAdmin) {
+                userPasswordCheckContainer.style.display = '';
+                passwordCheckAlert.style.display = '';
+                // Attach password check logic
+                const input = document.getElementById('userCheckPasswordInput');
+                const btn = document.getElementById('userCheckPasswordBtn');
+                function showAlert(message, color) {
+                    passwordCheckAlert.textContent = message;
+                    passwordCheckAlert.style.color = color;
+                    passwordCheckAlert.style.fontWeight = 'bold';
+                    passwordCheckAlert.style.background = color === 'red' ? '#ffeaea' : '#eaffea';
+                    passwordCheckAlert.style.border = `1px solid ${color}`;
+                    passwordCheckAlert.style.padding = '0.75em 1em';
+                    passwordCheckAlert.style.borderRadius = '8px';
+                    passwordCheckAlert.style.textAlign = 'center';
+                }
+                btn.onclick = async function() {
+                    const password = input.value.trim();
+                    passwordCheckAlert.textContent = '';
+                    if (!password) {
+                        showAlert('Please enter a password.', 'red');
+                        return;
+                    }
+                    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+                    if (!passwordPattern.test(password)) {
+                        showAlert('Password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.', 'red');
+                        return;
+                    }
+                    try {
+                        const res = await fetch('/admin/check-password-breach', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ password })
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            if (data.breached) {
+                                showAlert(`Password is breached: ${password}`, 'red');
+                            } else {
+                                showAlert(`Password is safe: ${password}`, 'green');
+                            }
+                        } else {
+                            showAlert(data.message || 'Server error.', 'red');
+                        }
+                    } catch (e) {
+                        showAlert('Server error.', 'red');
+                    }
+                };
+            }
+        } else {
+            // Show login/signup
+            if (desktopAuth) {
+                desktopAuth.innerHTML = `
+                    <button class="btn1" onclick="showLogin()">
+                        <i class="ri-login-box-line"></i> <span class="btn-text">Login</span>
+                    </button>
+                    <span class="nav_divider">/</span>
+                    <button class="btn2" onclick="showSignup()">
+                        <i class="ri-user-add-line"></i> <span class="btn-text">Sign Up</span>
+                    </button>
+                `;
+            }
+            mobileAuthItems.forEach(item => {
+                item.innerHTML = '';
+                item.innerHTML = `<a href="#" onclick="showLogin()"><i class="ri-login-box-line"></i> Login</a>`;
+            });
+            if (userPasswordCheckContainer) userPasswordCheckContainer.style.display = 'none';
+            if (passwordCheckAlert) passwordCheckAlert.style.display = 'none';
+        }
+    } catch (e) { /* ignore */ }
+
+    // Settings/Profile Update Logic
+    const settingsIcon = document.getElementById('settingsIcon');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsForm = document.getElementById('settingsForm');
+    const settingsError = document.getElementById('settingsError');
+
+    // Show settings icon only for logged-in users (not admin)
+    try {
+        const token = sessionStorage.getItem('token');
+        const res = await fetch('/auth/session', token ? { headers: { 'Authorization': 'Bearer ' + token } } : {});
+        const data = await res.json();
+        if (data.loggedIn && !data.user.isAdmin) {
+            settingsIcon.style.display = '';
+        } else {
+            settingsIcon.style.display = 'none';
+        }
+    } catch (e) { settingsIcon && (settingsIcon.style.display = 'none'); }
+
+    if (settingsIcon && settingsModal && settingsForm) {
+        settingsIcon.onclick = function() {
+            settingsModal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            settingsForm.reset();
+            settingsError.textContent = '';
+        };
+    }
+    window.hideSettings = function() {
+        settingsModal.style.display = 'none';
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+        settingsForm.reset();
+        settingsError.textContent = '';
+    };
+    if (settingsForm) {
+        settingsForm.onsubmit = async function(e) {
+            e.preventDefault();
+            const fullname = document.getElementById('settings-name').value.trim();
+            const email = document.getElementById('settings-email').value.trim();
+            const password = document.getElementById('settings-password').value.trim();
+            if (!fullname && !email && !password) {
+                settingsError.textContent = 'Input fields are empty.';
+                return;
+            }
+            settingsError.textContent = '';
+            const res = await fetch('/auth/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullname, email, password })
+            });
+            const result = await res.json();
+            if (result.success) {
+                settingsError.style.color = '#4caf50';
+                settingsError.textContent = 'Profile updated successfully!';
+                setTimeout(() => { hideSettings(); window.location.reload(); }, 1000);
+            } else {
+                settingsError.style.color = '#ff4d4d';
+                settingsError.textContent = result.error || 'Update failed.';
+            }
+        };
+    }
 });
 
 // Modal functions (kept outside the DOMContentLoaded to be accessible globally)
@@ -345,7 +510,7 @@ function showLogin() {
     document.body.style.overflow = "hidden"; // Prevent scrolling
     
     // Reset the form if it exists
-    const loginForm = document.querySelector(".auth-form[action='login.php']");
+    const loginForm = document.querySelector(".auth-form[action='/auth/login']");
     if (loginForm) {
         loginForm.reset();
     }
