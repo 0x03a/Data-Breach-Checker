@@ -31,11 +31,11 @@
         
         <!-- Main Menu -->
         <ul class="menu">
-            <li><a href="index.html"><i class="ri-home-5-line"></i> Home</a></li>
+            <li><a href="/views/home.html"><i class="ri-home-5-line"></i> Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="database.html"><i class="ri-database-2-line"></i> DataBase</a></li>
-            <li><a href="contact.html"><i class="ri-chat-3-line"></i> Contact</a></li>
-            <li><a href="FAQ's.html"><i class="ri-question-line"></i> FAQ's</a></li>
+            <li><a href="/views/contact.html"><i class="ri-chat-3-line"></i> Contact</a></li>
+            <li><a href="/views/FAQ's.html"><i class="ri-question-line"></i> FAQ's</a></li>
             <!-- Only one set of mobile auth items -->
             <li class="mobile-auth-item" id="mobileLoginItem"><a href="#" onclick="showLogin()"><i class="ri-login-box-line"></i> Login123</a></li>
             <li class="mobile-auth-item" id="mobileSignupItem"><a href="#" onclick="showSignup()"><i class="ri-user-add-line"></i> Sign Up</a></li>
@@ -498,9 +498,22 @@
             return;
           }
         }
-        // Email validation (basic)
-        if (!email.match(/^\S+@\S+\.\S+$/)) {
-          document.getElementById('userUpdateProfileError').textContent = 'Please enter a valid email address.';
+        // Email validation (AbstractAPI)
+        async function verifyEmailWithAbstractAPI(email) {
+          try {
+            const ABSTRACTAPI_KEY = 'f659f97cd12947d3aad411565c4538ce';
+            const url = `https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACTAPI_KEY}&email=${encodeURIComponent(email)}`;
+            const response = await fetch(url);
+            if (!response.ok) return false;
+            const data = await response.json();
+            return data.deliverability === 'DELIVERABLE';
+          } catch {
+            return false;
+          }
+        }
+        const isValidEmail = await verifyEmailWithAbstractAPI(email);
+        if (!isValidEmail) {
+          document.getElementById('userUpdateProfileError').textContent = 'Please enter a valid, deliverable email address.';
           return;
         }
         // Update profile via token
