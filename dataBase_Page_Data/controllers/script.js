@@ -513,3 +513,63 @@ function hideLogin() {
     document.getElementById("overlay").style.display = "none";
     document.body.style.overflow = ""; // Restore scrolling
 }
+
+async function sendEmail() {
+    let parms = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim()
+    };
+
+    // Remove any previous message
+    let msgDiv = document.getElementById('emailStatusMsg');
+    if (!msgDiv) {
+        msgDiv = document.createElement('div');
+        msgDiv.id = 'emailStatusMsg';
+        msgDiv.style.marginTop = '1rem';
+        document.getElementById('contactForm').appendChild(msgDiv);
+    }
+    msgDiv.textContent = '';
+    msgDiv.style.display = 'none';
+
+    // Field validation
+    if (!parms.name || !parms.email || !parms.subject || !parms.message) {
+        msgDiv.textContent = 'Please fill in all fields.';
+        msgDiv.style.color = '#fff';
+        msgDiv.style.background = '#dc3545';
+        msgDiv.style.padding = '0.75rem 1rem';
+        msgDiv.style.borderRadius = '6px';
+        msgDiv.style.display = 'block';
+        return;
+    }
+
+    // Email validation using AbstractAPI
+    const isValid = await verifyEmailWithAbstractAPI(parms.email);
+    if (!isValid) {
+        msgDiv.textContent = 'Please enter a valid, deliverable email address.';
+        msgDiv.style.color = '#fff';
+        msgDiv.style.background = '#dc3545';
+        msgDiv.style.padding = '0.75rem 1rem';
+        msgDiv.style.borderRadius = '6px';
+        msgDiv.style.display = 'block';
+        return;
+    }
+
+    emailjs.send('service_i2kr0da', "template_tdhf15i", parms)
+        .then(function() {
+            msgDiv.textContent = 'Email sent successfully!';
+            msgDiv.style.color = '#fff';
+            msgDiv.style.background = '#28a745';
+            msgDiv.style.padding = '0.75rem 1rem';
+            msgDiv.style.borderRadius = '6px';
+            msgDiv.style.display = 'block';
+        }, function(error) {
+            msgDiv.textContent = 'Failed to send email. Please try again.';
+            msgDiv.style.color = '#fff';
+            msgDiv.style.background = '#dc3545';
+            msgDiv.style.padding = '0.75rem 1rem';
+            msgDiv.style.borderRadius = '6px';
+            msgDiv.style.display = 'block';
+        });
+}

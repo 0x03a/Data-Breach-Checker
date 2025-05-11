@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const passwordController = require('./controllers/passwordController');
 const User = require('./models/User');
 const bcrypt = require('bcryptjs');
+const contactRoutes = require('./routes/contact');
 
 const app = express();
 
@@ -67,9 +68,19 @@ mongoose.connect('mongodb://localhost:27017/data_breach_checker')
   process.exit(1);
 });
 
+
+console.log('ENV DEBUG:', {
+  MAIL_HOST: process.env.MAIL_HOST,
+  MAIL_PORT: process.env.MAIL_PORT,
+  MAIL_USER: process.env.MAIL_USER,
+  MAIL_PASS: process.env.MAIL_PASS ? '***' : undefined,
+  MAIL_FROM: process.env.MAIL_FROM
+});
 // Routes
+console.log('GMAIL_USEydR:', process.env.MAIL_USER);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
+app.use('/contact', contactRoutes);
 
 // Serve home page
 app.get('/', (req, res) => {

@@ -4,11 +4,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-// Hardcoded admin credentials
-const ADMIN_NAME = 'Inshal';
-const ADMIN_EMAIL = 'f223365@cfd.nu.edu.pk';
-const ADMIN_PASSWORD = '@123insh';
-
 // Generate a random session token
 function generateSessionToken() {
   return crypto.randomBytes(32).toString('hex');
@@ -23,7 +18,7 @@ async function authenticateToken(req, res, next) {
 
   // Check for hardcoded admin
   if (token === 'admin-static-token') {
-    req.user = { id: 'admin', isAdmin: true, fullname: ADMIN_NAME, email: ADMIN_EMAIL };
+    req.user = { id: 'admin', isAdmin: true, fullname: 'Inshal', email: 'inshal@gmail.com' };
     return next();
   }
 
@@ -38,9 +33,9 @@ async function authenticateToken(req, res, next) {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   // Check for hardcoded admin
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+  if (email === 'inshal@gmail.com' && password === '@123insR') {
     // Return a static token for admin
-    return res.json({ success: true, isAdmin: true, fullname: ADMIN_NAME, token: 'admin-static-token' });
+    return res.json({ success: true, isAdmin: true, fullname: 'Inshal', token: 'admin-static-token' });
   }
   // Otherwise, check database for regular users
   const user = await User.findOne({ email });
@@ -93,10 +88,6 @@ router.post('/update-profile', authenticateToken, async (req, res) => {
   const { fullname, email, password } = req.body;
   if (!fullname && !email && !password) {
     return res.status(400).json({ error: 'Input fields are empty.' });
-  }
-  // Validation
-  if (email === ADMIN_EMAIL) {
-    return res.status(400).json({ error: 'Cannot use admin email.' });
   }
   const update = {};
   if (fullname) update.fullname = fullname;
