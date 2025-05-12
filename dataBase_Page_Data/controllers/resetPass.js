@@ -102,12 +102,10 @@ async function verifyEmailWithAbstractAPI(email) {
 
 // reset form validation
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector("form[action='send-reset-link.php']").addEventListener("submit", async function (event) {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async function (event) {
         event.preventDefault();
-        const email = document.getElementById("email").value.trim();
-        const isValid = await verifyEmailWithAbstractAPI(email);
-        if (isValid) {
-            this.submit();
-        }
+        alert('Password reset via email is currently not available. Please contact the administrator for assistance.');
+        return;
     });
 });
