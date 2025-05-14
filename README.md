@@ -89,6 +89,7 @@ data-breach-checker/
 # Clone the repository
 git clone https://github.com/yourusername/data-breach-checker.git
 cd data-breach-checker
+cd dataBase_Page_data
 
 # Install dependencies
 npm install
