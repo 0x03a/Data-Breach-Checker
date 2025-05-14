@@ -82,7 +82,7 @@ data-breach-checker/
 ### Prerequisites
 - Node.js (v14+)
 - MongoDB (local or Atlas)
-- API keys (see `.env.example`)
+= API key ( see it from Abstract API, and replace it with your key)
 
 ### Installation
 ```bash
