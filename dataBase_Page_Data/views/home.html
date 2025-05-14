@@ -33,7 +33,7 @@
         <ul class="menu">
             <li><a href="/views/home.html"><i class="ri-home-5-line"></i> Home</a></li>
             <li><a href="/views/about.html">About</a></li>
-            <li><a href="database.html"><i class="ri-database-2-line"></i> DataBase</a></li>
+            <!-- <li><a href="database.html"><i class="ri-database-2-line"></i> DataBase</a></li> -->
             <li><a href="/views/contact.html"><i class="ri-chat-3-line"></i> Contact</a></li>
             <li><a href="/views/FAQ's.html"><i class="ri-question-line"></i> FAQ's</a></li>
             <!-- Only one set of mobile auth items -->
@@ -314,6 +314,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Check for error messages in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const message = urlParams.get('message');
+
+        if (error === 'signup_failed') {
+            if (message === 'This email is already registered. Please use a different email or log in with your existing account.') {
+                alert('This email is already registered. Please use a different email or log in with your existing account.');
+            } else if (message === 'Account already exists. Please log in.') {
+                alert('You already have an account. Please log in instead.');
+            } else {
+                alert('Signup failed: ' + (message || 'Unknown error occurred'));
+            }
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (error === 'login_failed') {
+            alert('Login failed: ' + (message || 'Unknown error occurred'));
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Update Google signup button to use the new signup route
+        const googleSignupBtn = document.querySelector('#signupModal .auth-social .google');
+        if (googleSignupBtn) {
+            googleSignupBtn.onclick = function() {
+                window.location.href = '/auth/google/signup';
+            };
+        }
+
+        // Keep login button using the regular Google auth route
+        const googleLoginBtn = document.querySelector('#loginModal .auth-social .google');
+        if (googleLoginBtn) {
+            googleLoginBtn.onclick = function() {
+                window.location.href = '/auth/google';
+            };
+        }
+
         // Add menu toggle functionality
         function toggleMenu(event) {
             if (event) {

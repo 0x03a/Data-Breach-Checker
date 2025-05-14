@@ -14,7 +14,7 @@
             min-height: 100vh;
         }
         .navbar {
-            background: #0a1124;
+            background: #000000;
             border-bottom: 1px solid #181f2c;
         }
         .navbar .logo_part_1, .navbar .logo_part_2, .navbar .logo_part_3 {
@@ -30,15 +30,16 @@
             letter-spacing: 1px;
         }
         .navbar .form-control {
-            background: #181f2c;
+            background: #0A1124;
             color: #fff;
             border: none;
         }
         .navbar .form-control:focus {
-            background: #181f2c;
+            background:#0A1124;
             color: #fff;
             border: 1px solid #2563eb;
             box-shadow: none;
+            
         }
         .navbar .btn, .navbar .btn:focus {
             box-shadow: none;
@@ -126,6 +127,12 @@
             border-bottom: none;
         }
     </style>
+      <style>
+        #searchInput::placeholder {
+            color: white;
+            
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
@@ -135,9 +142,12 @@
         <span class="logo_part_3">=</span>
         <h4 class="ms-2">Secure Net</h4>
     </div>
-    <form id="searchForm" class="d-none d-md-flex ms-auto me-3" style="width: 260px;">
-        <input id="searchInput" class="form-control" type="search" placeholder="Enter email..." aria-label="Search">
+    <form id="searchForm" class="d-none d-md-flex ms-auto me-3" style="width: 260px;background-color: #0A1124;">
+        <input id="searchInput" class="form-control" type="search" placeholder="Enter email..." aria-label="Search" style="color: white; background-color: transparent;">
     </form>
+    
+  
+    
     <button onclick="logout()" class="btn btn-danger ms-2">Logout</button>
 </nav>
 <div class="container mt-5">
@@ -145,10 +155,10 @@
     <ul class="nav nav-tabs" id="adminTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-management" type="button" role="tab" aria-controls="user-management" aria-selected="true">User Management</button>
-        </li>
+        <!-- </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="breach-tab" data-bs-toggle="tab" data-bs-target="#data-breaches" type="button" role="tab" aria-controls="data-breaches" aria-selected="false">Data Breaches</button>
-        </li>
+        </li> -->
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="breach-password-tab" data-bs-toggle="tab" data-bs-target="#breach-passwords" type="button" role="tab" aria-controls="breach-passwords" aria-selected="false">BreachPassword</button>
         </li>
@@ -197,12 +207,12 @@
             </div>
         </div>
         <!-- Data Breaches Tab -->
-        <div class="tab-pane fade" id="data-breaches" role="tabpanel" aria-labelledby="breach-tab">
+        <!-- <div class="tab-pane fade" id="data-breaches" role="tabpanel" aria-labelledby="breach-tab">
             <div class="card p-4 mt-4">
                 <h4 class="fw-bold mb-3" style="color:#fff;">Data Breaches</h4>
                 <div style="color:#a1a1aa;">(Placeholder for data breach management UI)</div>
             </div>
-        </div>
+        </div> -->
         <!-- BreachPassword Tab -->
         <div class="tab-pane fade" id="breach-passwords" role="tabpanel" aria-labelledby="breach-password-tab">
             <div class="card p-4 mt-4">

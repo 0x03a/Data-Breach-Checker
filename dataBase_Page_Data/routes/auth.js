@@ -151,26 +151,52 @@ router.get('/google', passport.authenticate('google', {
   prompt: 'select_account'
 }));
 
-router.get(
-  '/google/callback',
-  passport.authenticate('google', { 
-    failureRedirect: '/login',
-    failureFlash: 'Google login failed' 
+// Google Signup Route
+router.get('/google/signup', passport.authenticate('google-signup', { 
+  scope: ['profile', 'email'],
+  prompt: 'select_account'
+}));
+
+// Google Signup Callback
+router.get('/google/signup/callback',
+  passport.authenticate('google-signup', { 
+    failureRedirect: '/views/home.html?error=signup_failed',
+    failureMessage: true
   }),
   async (req, res) => {
     try {
       if (!req.user) throw new Error('No user authenticated');
       
-      // Generate new session token (even if one exists)
       const sessionToken = generateSessionToken();
       req.user.sessionToken = sessionToken;
       await req.user.save();
 
       res.redirect(`http://localhost:3000/?token=${sessionToken}`);
-
     } catch (error) {
-      console.error('OAuth Callback Error:', error);
-      res.redirect('/login?error=oauth_failed');
+      console.error('Google Signup Callback Error:', error);
+      res.redirect('/views/home.html?error=signup_failed&message=' + encodeURIComponent(error.message));
+    }
+  }
+);
+
+// Google Login Callback
+router.get('/google/callback',
+  passport.authenticate('google', { 
+    failureRedirect: '/views/home.html?error=login_failed',
+    failureMessage: true
+  }),
+  async (req, res) => {
+    try {
+      if (!req.user) throw new Error('No user authenticated');
+      
+      const sessionToken = generateSessionToken();
+      req.user.sessionToken = sessionToken;
+      await req.user.save();
+
+      res.redirect(`http://localhost:3000/?token=${sessionToken}`);
+    } catch (error) {
+      console.error('Google Login Callback Error:', error);
+      res.redirect('/views/home.html?error=login_failed&message=' + encodeURIComponent(error.message));
     }
   }
 );

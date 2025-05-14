@@ -833,3 +833,74 @@ footer {
     margin-bottom: 769px;
     margin-right: 0px;
 }
+
+/* Database Information Section Styles */
+.database-info {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.database-info .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.database-info .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.database-info .card-title {
+    color: #00ff88;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.database-info .card-title i {
+    font-size: 1.8rem;
+}
+
+.database-info .card-text {
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.database-info ul li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.database-info ul li i {
+    color: #00ff88;
+    font-size: 1.2rem;
+}
+
+.database-info .text-center .card-title {
+    justify-content: center;
+}
+
+.database-info .text-center .card-text {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .database-info {
+        padding: 2rem 0;
+    }
+    
+    .database-info .card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .database-info .card-title {
+        font-size: 1.3rem;
+    }
+}
