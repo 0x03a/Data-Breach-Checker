@@ -87,7 +87,7 @@ data-breach-checker/
 ### Installation
 ```bash
 # Clone the repository
-git clone [https://github.com/yourusername/data-breach-checker.git](https://github.com/0x03a/Data-Breach-Checker.git)
+git clone https://github.com/0x03a/Data-Breach-Checker.git
 cd data-breach-checker
 cd dataBase_Page_data
 
